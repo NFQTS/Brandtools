@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Members Only Access</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    :root {
+      --black: #000000;
+      --pink: #ff4fd8;
+      --neon-pink: #ff8cff;
+      --white: #ffffff;
+      --gray: #1a1a1a;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--black);
+      color: var(--white);
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* ================= HERO ================= */
+
+    .hero {
+      min-height: 100vh;
+      padding: 6rem 5% 4rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      background: radial-gradient(circle at center, #080008 0%, #000000 70%);
+    }
+
+    .laser-bg {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .laser {
+      position: absolute;
+      width: 200%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--pink), var(--neon-pink), transparent);
+      opacity: 0.7;
+      animation: laserMove 4s linear infinite;
+      filter: blur(1px);
+    }
+
+    .laser:nth-child(1) { top: 15%; animation-duration: 6s; }
+    .laser:nth-child(2) { top: 28%; animation-duration: 5s; animation-delay: -1s; }
+    .laser:nth-child(3) { top: 41%; animation-duration: 4.5s; animation-delay: -2s; }
+    .laser:nth-child(4) { top: 55%; animation-duration: 6.5s; animation-delay: -3s; }
+    .laser:nth-child(5) { top: 68%; animation-duration: 5.2s; animation-delay: -1.5s; }
+    .laser:nth-child(6) { top: 80%; animation-duration: 7s; animation-delay: -2.5s; }
+
+    @keyframes laserMove {
+      from { transform: translateX(-100%); }
+      to { transform: translateX(100%); }
+    }
+
+    .orb {
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(255,79,216,0.35), transparent 70%);
+      border-radius: 50%;
+      animation: orbFloat 12s ease-in-out infinite alternate;
+      filter: blur(30px);
+    }
+
+    .orb:nth-child(7) { top: 10%; left: 15%; animation-duration: 14s; }
+    .orb:nth-child(8) { bottom: 15%; right: 10%; animation-duration: 16s; }
+    .orb:nth-child(9) { top: 40%; right: 25%; animation-duration: 18s; }
+
+    @keyframes orbFloat {
+      from { transform: translateY(0) translateX(0); }
+      to { transform: translateY(-60px) translateX(40px); }
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 900px;
+    }
+
+    .hero h1 {
+      font-size: clamp(3.8rem, 8vw, 8.5rem);
+      font-weight: 900;
+      line-height: 1;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(90deg, var(--white), var(--pink), var(--neon-pink), var(--white));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow:
+        0 0 20px rgba(255,79,216,0.6),
+        0 0 40px rgba(255,140,255,0.4);
+    }
+
+    .hero p {
+      font-size: clamp(1.2rem, 2.5vw, 1.7rem);
+      opacity: 0.9;
+    }
+
+    /* ================= ACCESS SECTION ================= */
+
+    .access {
+      padding: 7rem 5% 6rem;
+      background: #000;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .access::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, rgba(255,79,216,0.12), transparent 70%);
+      pointer-events: none;
+    }
+
+    .access h2 {
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      margin-bottom: 1.5rem;
+      color: var(--pink);
+      letter-spacing: 0.5px;
+    }
+
+    .access p {
+      font-size: 1.5rem;
+      max-width: 850px;
+      margin: 0 auto 3rem;
+      opacity: 0.9;
+    }
+
+    .access-form {
+      max-width: 520px;
+      margin: 0 auto;
+      background: rgba(0,0,0,0.6);
+      border: 1px solid rgba(255,79,216,0.35);
+      border-radius: 26px;
+      padding: 2.5rem;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 30px 90px rgba(255,79,216,0.45);
+    }
+
+    .access-form label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      font-size: 0.95rem;
+      opacity: 0.9;
+      text-align: left;
+    }
+
+    .access-form input {
+      width: 100%;
+      padding: 1.1rem;
+      margin-bottom: 1.6rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255,79,216,0.6);
+      background: var(--gray);
+      color: var(--white);
+      font-size: 1rem;
+    }
+
+    .access-form input:focus {
+      outline: none;
+      border-color: var(--pink);
+      box-shadow: 0 0 0 2px rgba(255,79,216,0.25);
+    }
+
+    .access-form button {
+      background: linear-gradient(90deg, var(--pink), var(--neon-pink));
+      color: var(--black);
+      font-size: 1.3rem;
+      padding: 1.2rem 3.5rem;
+      border-radius: 999px;
+      font-weight: 800;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      box-shadow: 0 15px 40px rgba(255,79,216,0.6);
+      transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border: none;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .access-form button:hover {
+      transform: scale(1.08);
+      box-shadow: 0 25px 60px rgba(255,79,216,0.9);
+      background: linear-gradient(90deg, var(--neon-pink), var(--pink));
+      color: var(--white);
+    }
+
+    /* ================= OPPORTUNITY COST CALCULATOR ================= */
+
+    .calculator {
+      padding: 7rem 5%;
+      background: linear-gradient(to bottom, #000000, #120012);
+      text-align: center;
+    }
+
+    .calculator h2 {
+      font-size: clamp(3rem, 7vw, 6rem);
+      margin-bottom: 1.5rem;
+    }
+
+    .calculator p {
+      font-size: 1.4rem;
+      max-width: 850px;
+      margin: 0 auto 3rem;
+      opacity: 0.9;
+    }
+
+    .calc-form {
+      max-width: 600px;
+      margin: 0 auto;
+      text-align: left;
+      background: rgba(0,0,0,0.55);
+      border: 1px solid rgba(255,79,216,0.35);
+      border-radius: 28px;
+      padding: 3rem;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 40px 120px rgba(255,79,216,0.45);
+    }
+
+    .calc-form label {
+      display: block;
+      margin-bottom: 0.4rem;
+      font-weight: 500;
+      font-size: 0.95rem;
+      opacity: 0.9;
+    }
+
+    .calc-form input {
+      width: 100%;
+      padding: 1rem;
+      margin-bottom: 1.6rem;
+      border-radius: 10px;
+      border: 1px solid rgba(255,79,216,0.6);
+      background: var(--gray);
+      color: var(--white);
+      font-size: 1rem;
+    }
+
+    .calc-form input:focus {
+      outline: none;
+      border-color: var(--pink);
+      box-shadow: 0 0 0 2px rgba(255,79,216,0.25);
+    }
+
+    .calc-form button {
+      background: linear-gradient(90deg, var(--pink), var(--neon-pink));
+      color: var(--black);
+      font-size: 1.4rem;
+      padding: 1.3rem 4rem;
+      border-radius: 999px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      box-shadow: 0 15px 40px rgba(255,79,216,0.6);
+      transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border: none;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .calc-form button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 25px 60px rgba(255,79,216,0.9);
+      background: linear-gradient(90deg, var(--neon-pink), var(--pink));
+      color: var(--white);
+    }
+
+    #calc-result {
+      margin-top: 3rem;
+      background: rgba(0,0,0,0.65);
+      padding: 2.5rem;
+      border-radius: 24px;
+      border: 1px solid rgba(255,79,216,0.35);
+      display: none;
+      box-shadow: 0 30px 80px rgba(255,79,216,0.45);
+    }
+
+    #calc-result h3 {
+      color: var(--pink);
+      margin-bottom: 1.2rem;
+      font-size: 2rem;
+    }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .result-card {
+      background: rgba(0,0,0,0.6);
+      border: 1px solid rgba(255,79,216,0.35);
+      border-radius: 20px;
+      padding: 1.8rem;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(255,79,216,0.35);
+    }
+
+    .result-card h4 {
+      font-size: 1.1rem;
+      opacity: 0.8;
+      margin-bottom: 0.6rem;
+    }
+
+    .result-card p {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--pink);
+    }
+
+    .platform-hint {
+      margin-top: 2.5rem;
+      font-size: 1.3rem;
+      opacity: 0.9;
+    }
+
+    /* ================= FOOTER ================= */
+
+    footer {
+      padding: 3rem 5%;
+      text-align: center;
+      background: var(--black);
+      border-top: 1px solid #222;
+      font-size: 0.95rem;
+      color: #aaa;
+    }
+
+    @media (max-width: 600px) {
+      .calc-form,
+      .access-form {
+        padding: 2.2rem;
+      }
+
+      .hero p {
+        font-size: 1.3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ================= HERO ================= -->
+  <section class="hero">
+    <div class="laser-bg">
+      <div class="laser"></div>
+      <div class="laser"></div>
+      <div class="laser"></div>
+      <div class="laser"></div>
+      <div class="laser"></div>
+      <div class="laser"></div>
+      <div class="orb"></div>
+      <div class="orb"></div>
+      <div class="orb"></div>
+    </div>
+
+    <div class="hero-content">
+      <h1>Members Only Access</h1>
+      <p>
+        Revolutionary systems. Controlled distribution.<br>
+        Access is limited to prevent misuse and scams.
+      </p>
+    </div>
+  </section>
+
+  <!-- ================= ACCESS SECTION ================= -->
+  <section class="access">
+    <h2>Request Access</h2>
+    <p>
+      We restrict access to verified members only.<br>
+      This protects the technology — and the people using it.
+    </p>
+
+    <form class="access-form" action="mailto:assistance@unprincipledinc.com" method="post" enctype="text/plain">
+      <label for="email">Your Email</label>
+      <input type="email" id="email" name="email" placeholder="you@company.com" required>
+
+      <button type="submit">Request Access</button>
+    </form>
+  </section>
+
+  <!-- ================= OPPORTUNITY COST CALCULATOR ================= -->
+  <section class="calculator">
+    <h2>Opportunity Cost Calculator</h2>
+    <p>
+      See how much revenue you’re leaving on the table — and where.
+    </p>
+
+    <form class="calc-form" id="calc-form">
+      <label for="viewers">Monthly Viewers / Impressions</label>
+      <input type="number" id="viewers" placeholder="e.g., 50000" required min="0">
+
+      <label for="calls">Sales Calls Generated</label>
+      <input type="number" id="calls" placeholder="e.g., 40" required min="0">
+
+      <label for="profit">Total Profit from Those Calls ($)</label>
+      <input type="number" id="profit" placeholder="e.g., 12000" required min="0">
+
+      <button type="submit">Calculate</button>
+    </form>
+
+    <div id="calc-result">
+      <h3>Your Opportunity Snapshot</h3>
+
+      <div class="result-grid">
+        <div class="result-card">
+          <h4>Profit per Call</h4>
+          <p id="profitPerCall">$0</p>
+        </div>
+
+        <div class="result-card">
+          <h4>Value per Viewer</h4>
+          <p id="valuePerViewer">$0</p>
+        </div>
+
+        <div class="result-card">
+          <h4>Missed Revenue (Est.)</h4>
+          <p id="missedRevenue">$0</p>
+        </div>
+      </div>
+
+      <div class="platform-hint" id="platformHint"></div>
+    </div>
+  </section>
+
+  <!-- ================= FOOTER ================= -->
+  <footer>
+    <p>&copy; 2026 Unprincipled Inc. All rights reserved.</p>
+  </footer>
+
+  <!-- ================= SCRIPT ================= -->
+  <script>
+    const calcForm = document.getElementById('calc-form');
+    const resultBox = document.getElementById('calc-result');
+    const profitPerCallEl = document.getElementById('profitPerCall');
+    const valuePerViewerEl = document.getElementById('valuePerViewer');
+    const missedRevenueEl = document.getElementById('missedRevenue');
+    const platformHintEl = document.getElementById('platformHint');
+
+    calcForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const viewers = parseFloat(document.getElementById('viewers').value) || 0;
+      const calls = parseFloat(document.getElementById('calls').value) || 0;
+      const profit = parseFloat(document.getElementById('profit').value) || 0;
+
+      const profitPerCall = calls > 0 ? profit / calls : 0;
+      const valuePerViewer = viewers > 0 ? profit / viewers : 0;
+
+      // Simple opportunity estimate:
+      // If they doubled calls with same viewer base, what’s the upside?
+      const potentialCalls = calls * 2;
+      const potentialProfit = potentialCalls * profitPerCall;
+      const missedRevenue = potentialProfit - profit;
+
+      profitPerCallEl.textContent = `$${profitPerCall.toFixed(2)}`;
+      valuePerViewerEl.textContent = `$${valuePerViewer.toFixed(4)}`;
+      missedRevenueEl.textContent = `$${missedRevenue > 0 ? missedRevenue.toFixed(2) : '0.00'}`;
+
+      // Platform hint logic (light, teaser style)
+      let hint = "Your numbers suggest there’s untapped demand.";
+
+      if (valuePerViewer < 0.02) {
+        hint = "Your content isn’t converting well — platforms like LinkedIn or YouTube may outperform your current channel.";
+      } else if (valuePerViewer >= 0.02 && valuePerViewer < 0.10) {
+        hint = "You’re mid-range — optimization could unlock major upside.";
+      } else {
+        hint = "Your audience converts well — scaling on similar platforms could multiply revenue.";
+      }
+
+      platformHintEl.textContent = hint;
+
+      resultBox.style.display = 'block';
+      resultBox.scrollIntoView({ behavior: 'smooth' });
+    });
+  </script>
+
+</body>
+</html>
