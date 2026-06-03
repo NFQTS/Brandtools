@@ -210,7 +210,7 @@
         <div class="reveal" id="reveal">SOMETHING IS COMING…</div>
         
         <button class="signal-button" onclick="handleSignal()">
-            SIGNAL YOUR INTEREST • DM @UnprincipledInc
+            SUPPORT WEB3 NOW
         </button>
         
         <div class="footer">SOLANA • 2026 • TRANSMISSION INCOMING</div>
@@ -307,14 +307,14 @@
             }, 650);
         }
         
-        // New signal handler - directs to DMs
+        // Simple, clean public signal
         function handleSignal() {
-            const message = encodeURIComponent("I'm aligned with Unprincipled Inc. and want to contribute early.");
-            window.open(`https://x.com/messages/compose?recipient_id=UnprincipledInc&text=${message}`, '_blank');
-            // Fallback if direct compose doesn't work
-            setTimeout(() => {
-                window.open('https://x.com/UnprincipledInc', '_blank');
-            }, 800);
+            const tweetText = encodeURIComponent(
+                "Locking in with @UnprincipledInc… LFG 🔥🚀🔥\n\n" +
+                "#TheResistance"
+            );
+            
+            window.open(`https://x.com/intent/tweet?text=${tweetText}`, '_blank');
         }
         
         // Init everything
