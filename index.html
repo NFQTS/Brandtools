@@ -125,7 +125,7 @@
             opacity: 0.25;
         }
         
-        .early-access {
+        .signal-button {
             margin-top: 2rem;
             padding: 18px 48px;
             font-family: 'Press Start 2P', cursive;
@@ -142,14 +142,14 @@
             box-shadow: 0 0 30px rgba(255,255,255,0.5);
         }
         
-        .early-access:hover {
+        .signal-button:hover {
             background: #fff;
             color: #000;
             box-shadow: 0 0 50px #fff;
             transform: scale(1.05);
         }
         
-        .early-access::before {
+        .signal-button::before {
             content: '';
             position: absolute;
             top: -50%;
@@ -165,7 +165,7 @@
             transition: 0.7s;
         }
         
-        .early-access:hover::before {
+        .signal-button:hover::before {
             left: 300%;
         }
         
@@ -209,8 +209,8 @@
         
         <div class="reveal" id="reveal">SOMETHING IS COMING…</div>
         
-        <button class="early-access" onclick="handleEarlyAccess()">
-            PAY 1 SOL • EARLY ACCESS
+        <button class="signal-button" onclick="handleSignal()">
+            SIGNAL YOUR INTEREST • DM @UnprincipledInc
         </button>
         
         <div class="footer">SOLANA • 2026 • TRANSMISSION INCOMING</div>
@@ -277,7 +277,7 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
         
-        // Teaser cycling - fixed & smoother
+        // Teaser cycling
         const teasers = [
             { text: "333 LORDS AND LADIES", imgId: "art1" },
             { text: "666 NOBLES", imgId: "art2" },
@@ -290,12 +290,10 @@
         function cycleTeaser() {
             current = (current + 1) % teasers.length;
             
-            // Fade out
             teaserEl.style.opacity = 0;
             artContainer.classList.remove('active');
             
             setTimeout(() => {
-                // Update content
                 teaserEl.textContent = teasers[current].text;
                 
                 document.querySelectorAll('#artContainer img').forEach(img => {
@@ -304,16 +302,19 @@
                 const newImg = document.getElementById(teasers[current].imgId);
                 newImg.style.display = 'block';
                 
-                // Fade in
                 teaserEl.style.opacity = 1;
                 artContainer.classList.add('active');
             }, 650);
         }
         
-        // Early access button handler (placeholder)
-        function handleEarlyAccess() {
-            alert("🌌 Early access mint link would open here.\n\nPhantom wallet would prompt for 1 SOL transfer.\n\n(Replace this with real deeplink or payment flow)");
-            // Example: window.location = "https://your-mint-link.com";
+        // New signal handler - directs to DMs
+        function handleSignal() {
+            const message = encodeURIComponent("I'm aligned with Unprincipled Inc. and want to contribute early.");
+            window.open(`https://x.com/messages/compose?recipient_id=UnprincipledInc&text=${message}`, '_blank');
+            // Fallback if direct compose doesn't work
+            setTimeout(() => {
+                window.open('https://x.com/UnprincipledInc', '_blank');
+            }, 800);
         }
         
         // Init everything
