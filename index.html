@@ -196,6 +196,9 @@
     <canvas id="space"></canvas>
     
     <div class="content">
+        <!-- Swapped: SOMETHING IS COMING… is now at the top -->
+        <div class="reveal" id="reveal">SOMETHING IS COMING…</div>
+        
         <div class="logo">UNPRINCIPLED INC.</div>
         
         <div class="blurred-art" id="artContainer">
@@ -206,8 +209,6 @@
         </div>
         
         <div class="teaser" id="teaser">333 LORDS AND LADIES</div>
-        
-        <div class="reveal" id="reveal">SOMETHING IS COMING…</div>
         
         <button class="signal-button" onclick="handleSignal()">
             SUPPORT WEB3 NOW
@@ -322,13 +323,13 @@
             initSpace();
             animateSpace();
             
-            // Staggered entrance
-            setTimeout(() => document.querySelector('.logo').style.opacity = 1, 600);
+            // Staggered entrance - adjusted timing for new order
+            setTimeout(() => document.getElementById('reveal').style.opacity = 1, 400);
+            setTimeout(() => document.querySelector('.logo').style.opacity = 1, 900);
             
             setTimeout(() => {
                 artContainer.classList.add('active');
                 teaserEl.style.opacity = 1;
-                document.getElementById('reveal').style.opacity = 1;
             }, 1600);
             
             // Cycle every 5.2s
