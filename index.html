@@ -189,6 +189,8 @@
 		<div class="blurred-art"></div>
 		
 		<div class="teaser" id="teaser">333 LORDS AND LADIES</div>
+		
+		<div class="logo">UNPRINCIPLED INC.</div>
 
 		<div class="trampoline-game">
 			<div class="game-header">🏀 SKY BOUNCE</div>
@@ -284,8 +286,9 @@ function tap() {
 		score += 10;
 		if (score > best) best = score;
 	} else {
+		// FIXED: miss = instant reset to zero (no more "keeps current height" bug)
 		v += 6;
-		score = Math.max(0, score - 10);
+		score = 0;
 	}
 }
 
