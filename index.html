@@ -17,35 +17,36 @@
 		}
 
 		body {
-			overflow: hidden;
 			background: #000;
 			color: #fff;
 			font-family: 'Orbitron', sans-serif;
-			height: 100vh;
 			position: relative;
+			overflow-y: auto;           /* ← Fixed: allows scrolling */
+			min-height: 100vh;
 		}
 
 		canvas#space {
-			position: absolute;
+			position: fixed;            /* Changed to fixed so it stays in background */
 			top: 0;
 			left: 0;
 			z-index: 1;
 			width: 100%;
 			height: 100%;
+			pointer-events: none;
 		}
 
 		.content {
 			position: relative;
 			z-index: 2;
-			min-height: 100vh;
 			display: flex;
 			flex-direction: column;
 			align-items: center;
 			text-align: center;
-			padding: 20px 15px 80px;
+			padding: 20px 15px 100px;   /* extra bottom padding for scroll */
 			max-width: 100%;
 			margin: 0 auto;
 			gap: 1.2rem;
+			min-height: 100vh;
 		}
 
 		.logo {
@@ -57,8 +58,6 @@
 			-webkit-background-clip: text;
 			-webkit-text-fill-color: transparent;
 			text-shadow: 0 0 30px rgba(255,255,255,0.6);
-			opacity: 1;
-			transition: opacity 1.5s ease;
 		}
 
 		.reveal {
@@ -82,7 +81,6 @@
 			background-size: 300% 300%;
 			animation: rainbow 6s linear infinite;
 			text-shadow: 0 0 20px rgba(255,255,255,0.5);
-			opacity: 1;
 		}
 
 		.blurred-art {
@@ -92,8 +90,6 @@
 			border: 3px solid #fff;
 			box-shadow: 0 0 60px rgba(255,255,255,0.4), inset 0 0 60px rgba(255,255,255,0.1);
 			margin: 0.8rem 0;
-			position: relative;
-			overflow: hidden;
 			border-radius: 6px;
 		}
 
@@ -160,14 +156,10 @@
 		}
 
 		.footer {
-			position: absolute;
-			bottom: 22px;
-			left: 50%;
-			transform: translateX(-50%);
+			margin-top: 2rem;
 			font-size: clamp(0.68rem, 2vw, 0.76rem);
 			opacity: 0.55;
-			white-space: nowrap;
-			pointer-events: none;
+			text-align: center;
 		}
 
 		@keyframes rainbow {
@@ -182,28 +174,8 @@
 
 		@media (max-width: 480px) {
 			.content {
-				padding: 15px 12px 70px;
-				justify-content: flex-start;
-				gap: 0.9rem;
-			}
-			.logo {
-				margin-top: 0.5rem;
-			}
-			.blurred-art {
-				margin: 0.6rem 0;
-			}
-			.trampoline-game {
-				padding: 12px;
-				margin: 8px auto;
-			}
-			.footer {
-				bottom: 16px;
-			}
-		}
-
-		@media (min-height: 800px) {
-			.content {
-				justify-content: center;
+				padding: 15px 12px 90px;
+				gap: 1rem;
 			}
 		}
 	</style>
@@ -220,7 +192,6 @@
 		
 		<div class="logo">UNPRINCIPLED INC.</div>
 
-		<!-- GAME -->
 		<div class="trampoline-game">
 			<div class="game-header">🏀 SKY BOUNCE</div>
 			<canvas id="trampolineGame" width="420" height="260"></canvas>
@@ -248,11 +219,7 @@ function initSpace() {
 	scene = new THREE.Scene();
 	camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
 
-	renderer = new THREE.WebGLRenderer({
-		canvas: document.getElementById("space"),
-		alpha: true
-	});
-
+	renderer = new THREE.WebGLRenderer({ canvas: document.getElementById("space"), alpha: true });
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
@@ -269,10 +236,8 @@ function initSpace() {
 	geometry.setAttribute("position", new THREE.Float32BufferAttribute(vertices, 3));
 	geometry.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
 
-	const material = new THREE.PointsMaterial({ size: 2, vertexColors: true, transparent: true });
-	particles = new THREE.Points(geometry, material);
+	particles = new THREE.Points(geometry, new THREE.PointsMaterial({ size: 2, vertexColors: true, transparent: true }));
 	scene.add(particles);
-
 	camera.position.z = 5;
 }
 
@@ -286,39 +251,31 @@ function resizeSpace() {
 function animateSpace() {
 	requestAnimationFrame(animateSpace);
 	particles.rotation.y += 0.00008;
-
 	const pos = particles.geometry.attributes.position.array;
 	for (let i = 2; i < pos.length; i += 3) {
 		pos[i] += 4.5;
 		if (pos[i] > 900) pos[i] = -900;
 	}
 	particles.geometry.attributes.position.needsUpdate = true;
-
 	renderer.render(scene, camera);
 }
 
-/* ================= TEASER CYCLE ================= */
-const teasers = [
-	{ text: "333 LORDS AND LADIES" },
-	{ text: "666 NOBLES" },
-	{ text: "999 PEASANTS" }
-];
+/* Teaser */
+const teasers = ["333 LORDS AND LADIES", "666 NOBLES", "999 PEASANTS"];
 let tIndex = 0;
-
 function cycleTeaser() {
 	tIndex = (tIndex + 1) % teasers.length;
-	document.getElementById("teaser").textContent = teasers[tIndex].text;
+	document.getElementById("teaser").textContent = teasers[tIndex];
 }
 
-/* ================= SIGNAL BUTTON ================= */
+/* Signal */
 function handleSignal() {
 	window.open("https://x.com/intent/tweet?text=" + encodeURIComponent("Joining Unprincipled Inc 🚀"), "_blank");
 }
 
-/* ================= TRAMPOLINE GAME ================= */
+/* Trampoline Game */
 const gameCanvas = document.getElementById("trampolineGame");
 const ctx = gameCanvas.getContext("2d");
-
 let y = 100, v = 0, g = 0.45, floor = 200;
 let score = 0, best = 0;
 
@@ -339,28 +296,15 @@ gameCanvas.addEventListener("touchstart", e => { e.preventDefault(); tap(); });
 
 function gameLoop() {
 	ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
-
 	v += g;
 	y += v;
+	if (y > floor) { y = floor; v *= -0.5; }
 
-	if (y > floor) {
-		y = floor;
-		v *= -0.5;
-	}
+	ctx.strokeStyle = "#00ffff"; ctx.lineWidth = 4;
+	ctx.beginPath(); ctx.moveTo(120, floor); ctx.lineTo(300, floor); ctx.stroke();
 
-	// Trampoline
-	ctx.strokeStyle = "#00ffff";
-	ctx.lineWidth = 4;
-	ctx.beginPath();
-	ctx.moveTo(120, floor);
-	ctx.lineTo(300, floor);
-	ctx.stroke();
-
-	// Ball
 	ctx.fillStyle = "#fff";
-	ctx.beginPath();
-	ctx.arc(210, y, 10, 0, Math.PI * 2);
-	ctx.fill();
+	ctx.beginPath(); ctx.arc(210, y, 10, 0, Math.PI * 2); ctx.fill();
 
 	document.getElementById("heightScore").innerText = score;
 	document.getElementById("bestScore").innerText = best;
@@ -368,18 +312,14 @@ function gameLoop() {
 	requestAnimationFrame(gameLoop);
 }
 
-/* ================= INIT ================= */
+/* INIT */
 window.onload = () => {
 	initSpace();
 	animateSpace();
 	window.addEventListener("resize", resizeSpace);
 
-	setTimeout(() => {
-		document.getElementById("reveal").style.opacity = 1;
-	}, 400);
-
+	setTimeout(() => document.getElementById("reveal").style.opacity = 1, 400);
 	setInterval(cycleTeaser, 3800);
-
 	gameLoop();
 };
 </script>
