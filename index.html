@@ -25,11 +25,13 @@
 			position: relative;
 		}
 
-		canvas {
+		canvas#space {
 			position: absolute;
 			top: 0;
 			left: 0;
 			z-index: 1;
+			width: 100%;
+			height: 100%;
 		}
 
 		.content {
@@ -41,14 +43,16 @@
 			justify-content: center;
 			align-items: center;
 			text-align: center;
-			padding: 20px;
+			padding: 20px 15px;
+			max-width: 100%;
+			margin: 0 auto;
 		}
 
 		.logo {
-			font-size: 2.8rem;
+			font-size: clamp(1.8rem, 5.5vw, 2.8rem);
 			font-weight: 900;
 			letter-spacing: 0.4em;
-			margin-bottom: 1.5rem;
+			margin-bottom: 1.2rem;
 			background: linear-gradient(90deg, #fff, #aaa, #fff);
 			-webkit-background-clip: text;
 			-webkit-text-fill-color: transparent;
@@ -59,9 +63,9 @@
 
 		.teaser {
 			font-family: 'Press Start 2P', cursive;
-			font-size: 1.25rem;
-			margin: 1.2rem 0;
-			min-height: 90px;
+			font-size: clamp(1rem, 3.8vw, 1.25rem);
+			margin: 1rem 0;
+			min-height: 70px;
 			background: linear-gradient(90deg, #ff00ff, #00ffff, #ffff00, #ff00ff);
 			-webkit-background-clip: text;
 			-webkit-text-fill-color: transparent;
@@ -72,10 +76,10 @@
 		}
 
 		.reveal {
-			font-size: 3.8rem;
+			font-size: clamp(2.4rem, 8vw, 3.8rem);
 			font-weight: 900;
 			letter-spacing: 0.15em;
-			margin: 2.5rem 0 2rem;
+			margin: 2rem 0 1.8rem;
 			color: #fff;
 			text-shadow: 0 0 40px #fff, 0 0 80px #ff00ff;
 			opacity: 0;
@@ -83,27 +87,30 @@
 		}
 
 		.blurred-art {
-			width: 340px;
-			height: 340px;
+			width: min(340px, 90vw);
+			height: min(340px, 90vw);
+			max-width: 340px;
 			background: #111;
 			border: 3px solid #fff;
 			box-shadow: 0 0 60px rgba(255,255,255,0.4), inset 0 0 60px rgba(255,255,255,0.1);
-			margin: 2rem 0;
+			margin: 1.8rem 0;
 			position: relative;
 			overflow: hidden;
 			border-radius: 4px;
 		}
 
 		.signal-button {
-			margin-top: 2rem;
-			padding: 18px 48px;
+			margin-top: 1.8rem;
+			padding: clamp(14px, 4vw, 18px) clamp(36px, 9vw, 48px);
 			font-family: 'Press Start 2P', cursive;
-			font-size: 1.1rem;
+			font-size: clamp(0.95rem, 3.2vw, 1.1rem);
 			background: transparent;
 			color: #fff;
 			border: 3px solid #fff;
 			cursor: pointer;
 			transition: 0.3s;
+			width: auto;
+			min-width: 220px;
 		}
 
 		.signal-button:hover {
@@ -113,15 +120,19 @@
 
 		.footer {
 			position: absolute;
-			bottom: 40px;
-			font-size: 0.75rem;
+			bottom: 30px;
+			font-size: clamp(0.65rem, 2vw, 0.75rem);
 			opacity: 0.5;
+			width: 100%;
+			text-align: center;
+			pointer-events: none;
 		}
 
 		/* ================= GAME ================= */
-
 		.trampoline-game {
-			margin: 25px 0;
+			width: 100%;
+			max-width: 420px;
+			margin: 20px auto;
 			padding: 15px;
 			border: 2px solid rgba(255,255,255,0.2);
 			background: rgba(0,0,0,0.45);
@@ -131,28 +142,34 @@
 
 		.game-header {
 			font-family: 'Press Start 2P', cursive;
-			font-size: 0.85rem;
+			font-size: clamp(0.75rem, 2.5vw, 0.85rem);
 			margin-bottom: 10px;
 			color: #00ffff;
 		}
 
 		#trampolineGame {
+			display: block;
+			width: 100% !important;
+			height: auto !important;
+			max-width: 420px;
+			margin: 0 auto;
 			background: radial-gradient(circle, rgba(30,30,50,0.9), rgba(0,0,0,0.95));
 			border-radius: 10px;
 			border: 1px solid rgba(255,255,255,0.15);
 			cursor: pointer;
+			image-rendering: crisp-edges;
 		}
 
 		.game-stats {
 			display: flex;
 			justify-content: space-between;
 			margin-top: 8px;
-			font-size: 0.8rem;
+			font-size: clamp(0.75rem, 2.2vw, 0.8rem);
 		}
 
 		.game-tip {
 			margin-top: 8px;
-			font-size: 0.7rem;
+			font-size: clamp(0.65rem, 2vw, 0.7rem);
 			opacity: 0.7;
 		}
 
@@ -164,6 +181,22 @@
 		@keyframes pulse {
 			from { text-shadow: 0 0 30px #fff; }
 			to { text-shadow: 0 0 70px #ff00ff; }
+		}
+
+		/* Mobile-specific tweaks */
+		@media (max-width: 480px) {
+			.content {
+				padding: 15px 12px;
+				justify-content: flex-start;
+				padding-top: 8vh;
+			}
+			.footer {
+				bottom: 18px;
+			}
+			.trampoline-game {
+				margin: 18px auto;
+				padding: 12px;
+			}
 		}
 	</style>
 </head>
@@ -181,7 +214,7 @@
 
 	<div class="logo">UNPRINCIPLED INC.</div>
 
-	<!-- GAME ADDED HERE -->
+	<!-- GAME -->
 	<div class="trampoline-game">
 		<div class="game-header">🏀 SKY BOUNCE</div>
 		<canvas id="trampolineGame" width="420" height="260"></canvas>
@@ -191,7 +224,7 @@
 			<div>Best: <span id="bestScore">0</span></div>
 		</div>
 
-		<div class="game-tip">CLICK WHEN BALL HITS TRAMPOLINE</div>
+		<div class="game-tip">TAP WHEN BALL HITS TRAMPOLINE</div>
 	</div>
 
 	<button class="signal-button" onclick="handleSignal()">
@@ -208,7 +241,7 @@ let scene, camera, renderer, particles;
 
 function initSpace() {
 	scene = new THREE.Scene();
-	camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 2000);
+	camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
 
 	renderer = new THREE.WebGLRenderer({
 		canvas: document.getElementById("space"),
@@ -216,6 +249,7 @@ function initSpace() {
 	});
 
 	renderer.setSize(window.innerWidth, window.innerHeight);
+	renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // crisp on high-DPI
 
 	const geometry = new THREE.BufferGeometry();
 	const vertices = [];
@@ -223,9 +257,9 @@ function initSpace() {
 
 	for (let i = 0; i < 9000; i++) {
 		vertices.push(
-			Math.random()*2000-1000,
-			Math.random()*2000-1000,
-			Math.random()*1800-900
+			Math.random() * 2000 - 1000,
+			Math.random() * 2000 - 1000,
+			Math.random() * 1800 - 900
 		);
 
 		let c = Math.random();
@@ -247,6 +281,13 @@ function initSpace() {
 	camera.position.z = 5;
 }
 
+function resizeSpace() {
+	if (!camera || !renderer) return;
+	camera.aspect = window.innerWidth / window.innerHeight;
+	camera.updateProjectionMatrix();
+	renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
 function animateSpace() {
 	requestAnimationFrame(animateSpace);
 
@@ -265,9 +306,9 @@ function animateSpace() {
 /* ================= TEASER ================= */
 
 const teasers = [
-	{ text:"333 LORDS AND LADIES" },
-	{ text:"666 NOBLES" },
-	{ text:"999 PEASANTS" }
+	{ text: "333 LORDS AND LADIES" },
+	{ text: "666 NOBLES" },
+	{ text: "999 PEASANTS" }
 ];
 
 let tIndex = 0;
@@ -281,7 +322,7 @@ function cycleTeaser() {
 
 function handleSignal() {
 	window.open("https://x.com/intent/tweet?text=" +
-	encodeURIComponent("Joining Unprincipled Inc 🚀"), "_blank");
+		encodeURIComponent("Joining Unprincipled Inc 🚀"), "_blank");
 }
 
 /* ================= TRAMPOLINE GAME ================= */
@@ -298,7 +339,7 @@ let score = 0;
 let best = 0;
 
 function tap() {
-	let near = y > floor-25 && y < floor+10 && v > 0;
+	let near = y > floor - 25 && y < floor + 10 && v > 0;
 
 	if (near) {
 		v = -13;
@@ -311,10 +352,13 @@ function tap() {
 }
 
 canvas.addEventListener("click", tap);
-canvas.addEventListener("touchstart", tap);
+canvas.addEventListener("touchstart", (e) => {
+	e.preventDefault();
+	tap();
+});
 
 function loop() {
-	ctx.clearRect(0,0,420,260);
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
 
 	v += g;
 	y += v;
@@ -328,14 +372,14 @@ function loop() {
 	ctx.strokeStyle = "#00ffff";
 	ctx.lineWidth = 4;
 	ctx.beginPath();
-	ctx.moveTo(120,floor);
-	ctx.lineTo(300,floor);
+	ctx.moveTo(120, floor);
+	ctx.lineTo(300, floor);
 	ctx.stroke();
 
 	// ball
 	ctx.fillStyle = "#fff";
 	ctx.beginPath();
-	ctx.arc(210,y,10,0,Math.PI*2);
+	ctx.arc(210, y, 10, 0, Math.PI * 2);
 	ctx.fill();
 
 	document.getElementById("heightScore").innerText = score;
@@ -350,7 +394,13 @@ window.onload = () => {
 	initSpace();
 	animateSpace();
 
-	setTimeout(()=>document.getElementById("reveal").style.opacity=1,500);
+	// Responsive resize for Three.js background
+	window.addEventListener("resize", resizeSpace);
+
+	setTimeout(() => {
+		document.getElementById("reveal").style.opacity = 1;
+	}, 500);
+
 	setInterval(cycleTeaser, 4000);
 
 	loop();
@@ -359,3 +409,4 @@ window.onload = () => {
 
 </body>
 </html>
+```​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​
