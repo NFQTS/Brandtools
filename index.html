@@ -10,28 +10,22 @@
 	<style>
 		@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Press+Start+2P&display=swap');
 
-		* {
-			margin: 0;
-			padding: 0;
-			box-sizing: border-box;
-		}
+		* { margin: 0; padding: 0; box-sizing: border-box; }
 
 		body {
 			background: #000;
 			color: #fff;
 			font-family: 'Orbitron', sans-serif;
 			position: relative;
-			overflow-y: auto;           /* ← Fixed: allows scrolling */
+			overflow-y: auto;
 			min-height: 100vh;
 		}
 
 		canvas#space {
-			position: fixed;            /* Changed to fixed so it stays in background */
-			top: 0;
-			left: 0;
+			position: fixed;
+			top: 0; left: 0;
 			z-index: 1;
-			width: 100%;
-			height: 100%;
+			width: 100%; height: 100%;
 			pointer-events: none;
 		}
 
@@ -42,7 +36,7 @@
 			flex-direction: column;
 			align-items: center;
 			text-align: center;
-			padding: 20px 15px 100px;   /* extra bottom padding for scroll */
+			padding: 20px 15px 100px;
 			max-width: 100%;
 			margin: 0 auto;
 			gap: 1.2rem;
@@ -171,13 +165,6 @@
 			from { text-shadow: 0 0 30px #fff; }
 			to { text-shadow: 0 0 75px #ff00ff; }
 		}
-
-		@media (max-width: 480px) {
-			.content {
-				padding: 15px 12px 90px;
-				gap: 1rem;
-			}
-		}
 	</style>
 </head>
 <body>
@@ -190,7 +177,6 @@
 		
 		<div class="teaser" id="teaser">333 LORDS AND LADIES</div>
 		
-		<div class="logo">UNPRINCIPLED INC.</div>
 
 		<div class="trampoline-game">
 			<div class="game-header">🏀 SKY BOUNCE 🏀</div>
@@ -218,7 +204,6 @@ let scene, camera, renderer, particles;
 function initSpace() {
 	scene = new THREE.Scene();
 	camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
-
 	renderer = new THREE.WebGLRenderer({ canvas: document.getElementById("space"), alpha: true });
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -226,13 +211,11 @@ function initSpace() {
 	const geometry = new THREE.BufferGeometry();
 	const vertices = [];
 	const colors = [];
-
 	for (let i = 0; i < 9000; i++) {
 		vertices.push(Math.random()*2000-1000, Math.random()*2000-1000, Math.random()*1800-900);
 		let c = Math.random();
 		colors.push(c, c, c);
 	}
-
 	geometry.setAttribute("position", new THREE.Float32BufferAttribute(vertices, 3));
 	geometry.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
 
@@ -273,21 +256,23 @@ function handleSignal() {
 	window.open("https://x.com/intent/tweet?text=" + encodeURIComponent("Joining Unprincipled Inc 🚀"), "_blank");
 }
 
-/* Trampoline Game */
+/* ================= TRAMPOLINE GAME ================= */
 const gameCanvas = document.getElementById("trampolineGame");
 const ctx = gameCanvas.getContext("2d");
+
 let y = 100, v = 0, g = 0.45, floor = 200;
 let score = 0, best = 0;
+let justBounced = false;   // ← New flag to detect natural landing
 
 function tap() {
-	const near = y > floor - 25 && y < floor + 10 && v > 0;
+	const near = y > floor - 28 && y < floor + 12 && v > 0;
 	if (near) {
 		v = -13;
 		score += 10;
 		if (score > best) best = score;
+		justBounced = true;        // successful tap
 	} else {
-		// FIXED: miss = instant reset to zero (no more "keeps current height" bug)
-		v += 6;
+		v += 8;                    // stronger penalty on bad tap
 		score = 0;
 	}
 }
@@ -297,16 +282,38 @@ gameCanvas.addEventListener("touchstart", e => { e.preventDefault(); tap(); });
 
 function gameLoop() {
 	ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+
 	v += g;
 	y += v;
-	if (y > floor) { y = floor; v *= -0.5; }
 
-	ctx.strokeStyle = "#00ffff"; ctx.lineWidth = 4;
-	ctx.beginPath(); ctx.moveTo(120, floor); ctx.lineTo(300, floor); ctx.stroke();
+	// Detect when ball lands
+	if (y >= floor) {
+		y = floor;
+		const oldV = v;
+		v *= -0.5;
 
+		// If it landed without a successful tap this cycle → reset
+		if (!justBounced && oldV > 0) {
+			score = 0;
+		}
+		justBounced = false;
+	}
+
+	// Draw trampoline
+	ctx.strokeStyle = "#00ffff"; 
+	ctx.lineWidth = 4;
+	ctx.beginPath(); 
+	ctx.moveTo(120, floor); 
+	ctx.lineTo(300, floor); 
+	ctx.stroke();
+
+	// Draw ball
 	ctx.fillStyle = "#fff";
-	ctx.beginPath(); ctx.arc(210, y, 10, 0, Math.PI * 2); ctx.fill();
+	ctx.beginPath(); 
+	ctx.arc(210, y, 10, 0, Math.PI * 2); 
+	ctx.fill();
 
+	// Update UI
 	document.getElementById("heightScore").innerText = score;
 	document.getElementById("bestScore").innerText = best;
 
