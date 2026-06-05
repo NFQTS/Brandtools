@@ -43,7 +43,6 @@
             width: 100%; height: 100%;
             pointer-events: none;
         }
-
         #matrix { display: none; }
 
         .content {
@@ -64,8 +63,8 @@
             width: min(280px, 75vw);
             max-height: 180px;
             object-fit: contain;
-            margin: 1.5rem 0 0.5rem;
-            filter: drop-shadow(0 0 40px rgba(255,255,255,0.6));
+            margin: 1.8rem 0 0.8rem;
+            filter: drop-shadow(0 0 35px rgba(255,255,255,0.7));
         }
 
         .reveal {
@@ -76,7 +75,6 @@
             text-shadow: 0 0 40px var(--text), 0 0 80px var(--glow);
             opacity: 0;
             animation: pulse 4s infinite alternate;
-            margin-bottom: 0.5rem;
         }
 
         .teaser {
@@ -88,37 +86,17 @@
             -webkit-text-fill-color: transparent;
             background-size: 300% 300%;
             animation: rainbow 6s linear infinite;
-            text-shadow: 0 0 20px rgba(255,255,255,0.5);
         }
 
         .trampoline-game {
             width: 100%;
             max-width: 420px;
-            margin: 10px auto;
+            margin: 15px auto;
             padding: 16px;
             border: 2px solid rgba(255,255,255,0.2);
             background: rgba(0,0,0,0.5);
             backdrop-filter: blur(12px);
             border-radius: 12px;
-        }
-
-        .game-header {
-            font-family: 'Press Start 2P', cursive;
-            font-size: clamp(0.8rem, 2.6vw, 0.9rem);
-            margin-bottom: 12px;
-            color: var(--accent2);
-        }
-
-        #trampolineGame {
-            display: block;
-            width: 100% !important;
-            height: auto !important;
-            max-width: 420px;
-            margin: 0 auto;
-            background: radial-gradient(circle, rgba(30,30,50,0.9), rgba(0,0,0,0.95));
-            border-radius: 10px;
-            border: 1px solid rgba(255,255,255,0.2);
-            cursor: pointer;
         }
 
         .signal-button {
@@ -144,31 +122,29 @@
             margin-top: 2rem;
             font-size: clamp(0.68rem, 2vw, 0.76rem);
             opacity: 0.55;
-            text-align: center;
         }
 
-        /* THEME SLIDER / TOGGLE */
+        /* SMALL THEME SLIDER */
         #theme-toggle {
             position: fixed;
-            top: 25px;
-            right: 25px;
+            top: 20px;
+            right: 20px;
             z-index: 100;
             background: rgba(10,10,20,0.85);
-            padding: 8px 16px;
+            padding: 6px 10px;
             border-radius: 50px;
-            border: 2px solid rgba(255,255,255,0.3);
+            border: 2px solid rgba(255,255,255,0.25);
             backdrop-filter: blur(10px);
             display: flex;
             align-items: center;
-            gap: 12px;
-            color: white;
-            font-size: 1.1rem;
+            gap: 8px;
+            font-size: 1.3rem;
         }
 
         .toggle-slider {
             position: relative;
-            width: 69px;
-            height: 24px;
+            width: 68px;
+            height: 32px;
             background: rgba(255,255,255,0.1);
             border-radius: 50px;
             cursor: pointer;
@@ -178,18 +154,17 @@
         .toggle-slider::before {
             content: '';
             position: absolute;
-            top: 4px;
-            left: 4px;
-            width: 40px;
-            height: 40px;
+            top: 3px;
+            left: 3px;
+            width: 26px;
+            height: 26px;
             background: white;
             border-radius: 50%;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            transition: all 0.35s ease;
         }
 
         body[data-theme="matrix"] .toggle-slider::before {
-            transform: translateX(62px);
+            transform: translateX(36px);
         }
 
         .toggle-labels {
@@ -199,19 +174,9 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 14px;
-            font-size: 1.4rem;
+            padding: 0 8px;
             pointer-events: none;
-        }
-
-        @keyframes rainbow {
-            0% { background-position: 0% 50%; }
-            100% { background-position: 300% 50%; }
-        }
-
-        @keyframes pulse {
-            from { text-shadow: 0 0 30px var(--text); }
-            to { text-shadow: 0 0 75px var(--glow); }
+            font-size: 1.1rem;
         }
     </style>
 </head>
@@ -231,8 +196,10 @@
     <div class="content">
         <div class="reveal" id="reveal">SOMETHING IS COMING…</div>
         
-        <!-- YOUR LOGO GOES HERE -->
-        <img src="https://imgur.com/a/OQk1nFn" alt="Unprincipled Inc. Logo" class="logo">
+        <!-- 🔥 REPLACE THIS WITH YOUR IMGUR LINK -->
+        <img src="https://i.imgur.com/8EebZSg.jpg" 
+             alt="Unprincipled Inc. Logo" 
+             class="logo">
 
         <div class="teaser" id="teaser">333 LORDS AND LADIES</div>
 
@@ -256,7 +223,7 @@
     </div>
 
 <script>
-/* ================= THREE.JS SPACE ================= */
+/* ================= SPACE & MATRIX (unchanged) ================= */
 let scene, camera, renderer, particles;
 
 function initSpace() {
@@ -303,7 +270,7 @@ function animateSpace() {
     }
 }
 
-/* ================= MATRIX RAIN ================= */
+/* MATRIX RAIN */
 let matrixCanvas, matrixCtx, matrixFontSize = 16;
 let matrixColumns, matrixDrops = [];
 const matrixChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()_+-=[]{}|;:,.<>/?~アイウエオカキクケコ";
@@ -330,9 +297,7 @@ function drawMatrix() {
     for (let i = 0; i < matrixDrops.length; i++) {
         const text = matrixChars[Math.floor(Math.random() * matrixChars.length)];
         matrixCtx.fillText(text, i * matrixFontSize, matrixDrops[i] * matrixFontSize);
-        if (matrixDrops[i] * matrixFontSize > matrixCanvas.height && Math.random() > 0.975) {
-            matrixDrops[i] = 0;
-        }
+        if (matrixDrops[i] * matrixFontSize > matrixCanvas.height && Math.random() > 0.975) matrixDrops[i] = 0;
         matrixDrops[i]++;
     }
 }
@@ -342,18 +307,17 @@ function animateMatrix() {
     requestAnimationFrame(animateMatrix);
 }
 
-/* ================= THEME TOGGLE ================= */
+/* THEME TOGGLE */
 function toggleTheme() {
     const body = document.body;
     const isMatrix = body.dataset.theme === "matrix";
     
     body.dataset.theme = isMatrix ? "space" : "matrix";
-    
     document.getElementById("space").style.display = isMatrix ? "block" : "none";
     document.getElementById("matrix").style.display = isMatrix ? "none" : "block";
 }
 
-/* ================= TEASER & SIGNAL ================= */
+/* TEASER + SIGNAL + GAME (unchanged) */
 const teasers = ["333 LORDS AND LADIES", "666 NOBLES", "999 PEASANTS"];
 let tIndex = 0;
 function cycleTeaser() {
@@ -365,25 +329,16 @@ function handleSignal() {
     window.open("https://x.com/intent/tweet?text=" + encodeURIComponent("Joining Unprincipled Inc 🚀"), "_blank");
 }
 
-/* ================= TRAMPOLINE GAME ================= */
 const gameCanvas = document.getElementById("trampolineGame");
 const ctx = gameCanvas.getContext("2d");
-
 let y = 100, v = 0, g = 0.45, floor = 200;
-let score = 0, best = 0;
-let justBounced = false;
+let score = 0, best = 0, justBounced = false;
 
 function tap() {
     const near = y > floor - 28 && y < floor + 12 && v > 0;
     if (near) {
-        v = -13;
-        score += 10;
-        if (score > best) best = score;
-        justBounced = true;
-    } else {
-        v += 8;
-        score = 0;
-    }
+        v = -13; score += 10; if (score > best) best = score; justBounced = true;
+    } else { v += 8; score = 0; }
 }
 
 gameCanvas.addEventListener("click", tap);
@@ -391,9 +346,7 @@ gameCanvas.addEventListener("touchstart", e => { e.preventDefault(); tap(); });
 
 function gameLoop() {
     ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
-
-    v += g;
-    y += v;
+    v += g; y += v;
 
     if (y >= floor) {
         y = floor;
@@ -403,44 +356,29 @@ function gameLoop() {
         justBounced = false;
     }
 
-    ctx.strokeStyle = "#00ffff"; 
-    ctx.lineWidth = 4;
-    ctx.beginPath(); 
-    ctx.moveTo(120, floor); 
-    ctx.lineTo(300, floor); 
-    ctx.stroke();
+    ctx.strokeStyle = "#00ffff"; ctx.lineWidth = 4;
+    ctx.beginPath(); ctx.moveTo(120, floor); ctx.lineTo(300, floor); ctx.stroke();
 
     ctx.fillStyle = "#fff";
-    ctx.beginPath(); 
-    ctx.arc(210, y, 10, 0, Math.PI * 2); 
-    ctx.fill();
+    ctx.beginPath(); ctx.arc(210, y, 10, 0, Math.PI * 2); ctx.fill();
 
     document.getElementById("heightScore").innerText = score;
     document.getElementById("bestScore").innerText = best;
-
     requestAnimationFrame(gameLoop);
 }
 
 /* INIT */
 window.onload = () => {
-    initSpace();
-    animateSpace();
+    initSpace(); animateSpace();
+    initMatrix(); animateMatrix();
 
-    initMatrix();
-    animateMatrix();
-
-    window.addEventListener("resize", () => {
-        resizeSpace();
-        resizeMatrix();
-    });
+    window.addEventListener("resize", () => { resizeSpace(); resizeMatrix(); });
 
     setTimeout(() => document.getElementById("reveal").style.opacity = 1, 400);
     setInterval(cycleTeaser, 3800);
     gameLoop();
 
-    // Start with Space theme
     document.getElementById("space").style.display = "block";
-    document.getElementById("matrix").style.display = "none";
 };
 </script>
 </body>
