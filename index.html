@@ -28,7 +28,6 @@
             min-height: 100vh;
         }
 
-        /* THEME OVERRIDES */
         body[data-theme="matrix"] {
             --text: #00ff41;
             --accent1: #00ff41;
@@ -36,15 +35,8 @@
             --glow: #00ff41;
         }
 
-        body[data-theme="dream"] {
-            --text: #ffe4f0;
-            --accent1: #ff69b4;
-            --accent2: #c026d3;
-            --glow: #ff1493;
-        }
-
         /* CANVASES */
-        #space, #matrix, #dream {
+        #space, #matrix {
             position: fixed;
             top: 0; left: 0;
             z-index: 1;
@@ -52,9 +44,7 @@
             pointer-events: none;
         }
 
-        #matrix, #dream {
-            display: none;
-        }
+        #matrix { display: none; }
 
         .content {
             position: relative;
@@ -71,14 +61,11 @@
         }
 
         .logo {
-            font-size: clamp(1.9rem, 6vw, 2.9rem);
-            font-weight: 900;
-            letter-spacing: 0.35em;
-            margin-top: 1rem;
-            background: linear-gradient(90deg, var(--text), #ddd, var(--text));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 30px rgba(255,255,255,0.6);
+            width: min(280px, 75vw);
+            max-height: 180px;
+            object-fit: contain;
+            margin: 1.5rem 0 0.5rem;
+            filter: drop-shadow(0 0 40px rgba(255,255,255,0.6));
         }
 
         .reveal {
@@ -102,16 +89,6 @@
             background-size: 300% 300%;
             animation: rainbow 6s linear infinite;
             text-shadow: 0 0 20px rgba(255,255,255,0.5);
-        }
-
-        .blurred-art {
-            width: min(320px, 88vw);
-            height: min(320px, 88vw);
-            background: #111;
-            border: 3px solid var(--text);
-            box-shadow: 0 0 60px rgba(255,255,255,0.4), inset 0 0 60px rgba(255,255,255,0.1);
-            margin: 0.8rem 0;
-            border-radius: 6px;
         }
 
         .trampoline-game {
@@ -144,8 +121,6 @@
             cursor: pointer;
         }
 
-        .game-stats, .game-tip { color: var(--text); }
-
         .signal-button {
             margin-top: 1.2rem;
             padding: clamp(15px, 4.5vw, 19px) clamp(40px, 10vw, 52px);
@@ -172,44 +147,61 @@
             text-align: center;
         }
 
-        /* THEME SWITCHER */
-        #theme-switcher {
+        /* THEME SLIDER / TOGGLE */
+        #theme-toggle {
             position: fixed;
             top: 25px;
             right: 25px;
             z-index: 100;
-            display: flex;
-            gap: 12px;
             background: rgba(10,10,20,0.85);
-            padding: 8px 12px;
+            padding: 8px 16px;
             border-radius: 50px;
             border: 2px solid rgba(255,255,255,0.3);
             backdrop-filter: blur(10px);
-            box-shadow: 0 0 20px rgba(255,255,255,0.2);
-        }
-
-        .theme-btn {
-            width: 44px;
-            height: 44px;
-            border: none;
-            background: transparent;
-            font-size: 1.65rem;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border-radius: 50%;
             display: flex;
             align-items: center;
-            justify-content: center;
+            gap: 12px;
+            color: white;
+            font-size: 1.1rem;
         }
 
-        .theme-btn:hover {
-            transform: scale(1.15);
+        .toggle-slider {
+            position: relative;
+            width: 110px;
+            height: 48px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50px;
+            cursor: pointer;
+            overflow: hidden;
         }
 
-        .theme-btn.active {
-            background: rgba(255,255,255,0.15);
-            box-shadow: 0 0 30px var(--accent1);
-            transform: scale(1.1);
+        .toggle-slider::before {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        body[data-theme="matrix"] .toggle-slider::before {
+            transform: translateX(62px);
+        }
+
+        .toggle-labels {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 14px;
+            font-size: 1.4rem;
+            pointer-events: none;
         }
 
         @keyframes rainbow {
@@ -228,20 +220,20 @@
     <!-- THEME BACKGROUNDS -->
     <canvas id="space"></canvas>
     <canvas id="matrix"></canvas>
-    <canvas id="dream"></canvas>
 
-    <!-- THEME SWITCHER -->
-    <div id="theme-switcher">
-        <button data-theme="space" class="theme-btn active" onclick="setTheme('space')" title="Space Theme">🌌</button>
-        <button data-theme="matrix" class="theme-btn" onclick="setTheme('matrix')" title="Matrix Theme">🟢</button>
-        <button data-theme="dream" class="theme-btn" onclick="setTheme('dream')" title="Dreamy Luxe Theme">✨</button>
+    <!-- THEME TOGGLE -->
+    <div id="theme-toggle">
+        <span>🌌</span>
+        <div class="toggle-slider" onclick="toggleTheme()"></div>
+        <span>🖥️</span>
     </div>
 
     <div class="content">
         <div class="reveal" id="reveal">SOMETHING IS COMING…</div>
         
-        <div class="blurred-art"></div>
-        
+        <!-- YOUR LOGO GOES HERE -->
+        <img src="YOUR-LOGO-HERE.png" alt="Unprincipled Inc. Logo" class="logo">
+
         <div class="teaser" id="teaser">333 LORDS AND LADIES</div>
 
         <div class="trampoline-game">
@@ -350,97 +342,15 @@ function animateMatrix() {
     requestAnimationFrame(animateMatrix);
 }
 
-/* ================= DREAMY LUXE SPARKLE (new feminine theme) ================= */
-let dreamCanvas, dreamCtx;
-let dreamParticles = [];
-
-class DreamParticle {
-    constructor() {
-        this.reset();
-    }
-    reset() {
-        this.x = Math.random() * window.innerWidth;
-        this.y = Math.random() * window.innerHeight * 1.4 - window.innerHeight * 0.4;
-        this.size = Math.random() * 6 + 2.5;
-        this.speedY = Math.random() * 0.8 + 0.4;
-        this.speedX = (Math.random() - 0.5) * 1.2;
-        this.opacity = Math.random() * 0.8 + 0.4;
-        this.twinkleSpeed = Math.random() * 0.08 + 0.03;
-        this.hue = 280 + Math.random() * 70; // soft pinks, purples, rose gold
-        this.type = Math.random() < 0.75 ? "sparkle" : "petal";
-    }
-    update() {
-        this.y += this.speedY;
-        this.x += Math.sin(this.y * 0.008) * 1.1 + this.speedX;
-        this.opacity = 0.5 + Math.sin(Date.now() * this.twinkleSpeed) * 0.5;
-        if (this.y > window.innerHeight + 50) this.reset();
-    }
-    draw() {
-        dreamCtx.save();
-        dreamCtx.globalAlpha = this.opacity;
-        if (this.type === "sparkle") {
-            dreamCtx.fillStyle = `hsl(${this.hue}, 100%, 88%)`;
-            dreamCtx.shadowBlur = 12;
-            dreamCtx.shadowColor = `hsl(${this.hue}, 100%, 95%)`;
-            dreamCtx.fillRect(this.x, this.y, this.size, this.size);
-        } else {
-            dreamCtx.font = `${this.size * 4.5}px system-ui`;
-            dreamCtx.fillStyle = `hsl(${this.hue}, 90%, 85%)`;
-            dreamCtx.shadowBlur = 20;
-            dreamCtx.shadowColor = `hsl(${this.hue}, 100%, 92%)`;
-            dreamCtx.fillText("🌸", this.x - this.size*2, this.y);
-        }
-        dreamCtx.restore();
-    }
-}
-
-function initDream() {
-    dreamCanvas = document.getElementById("dream");
-    dreamCtx = dreamCanvas.getContext("2d");
-    resizeDream();
-    dreamParticles = [];
-    for (let i = 0; i < 180; i++) {   // optimized count
-        dreamParticles.push(new DreamParticle());
-    }
-}
-
-function resizeDream() {
-    if (!dreamCanvas) return;
-    dreamCanvas.width = window.innerWidth;
-    dreamCanvas.height = window.innerHeight;
-}
-
-function drawDream() {
-    dreamCtx.fillStyle = "rgba(20, 5, 25, 0.12)";   // soft dark purple fade
-    dreamCtx.fillRect(0, 0, dreamCanvas.width, dreamCanvas.height);
-
-    dreamParticles.forEach(p => {
-        p.update();
-        p.draw();
-    });
-}
-
-function animateDream() {
-    if (document.body.dataset.theme === "dream") drawDream();
-    requestAnimationFrame(animateDream);
-}
-
-/* ================= THEME SWITCHER ================= */
-let currentTheme = "space";
-
-function setTheme(theme) {
-    if (currentTheme === theme) return;
-    currentTheme = theme;
-
-    document.body.dataset.theme = theme;
-
-    document.getElementById("space").style.display = theme === "space" ? "block" : "none";
-    document.getElementById("matrix").style.display = theme === "matrix" ? "block" : "none";
-    document.getElementById("dream").style.display = theme === "dream" ? "block" : "none";
-
-    document.querySelectorAll("#theme-switcher .theme-btn").forEach(btn => {
-        btn.classList.toggle("active", btn.dataset.theme === theme);
-    });
+/* ================= THEME TOGGLE ================= */
+function toggleTheme() {
+    const body = document.body;
+    const isMatrix = body.dataset.theme === "matrix";
+    
+    body.dataset.theme = isMatrix ? "space" : "matrix";
+    
+    document.getElementById("space").style.display = isMatrix ? "block" : "none";
+    document.getElementById("matrix").style.display = isMatrix ? "none" : "block";
 }
 
 /* ================= TEASER & SIGNAL ================= */
@@ -519,20 +429,18 @@ window.onload = () => {
     initMatrix();
     animateMatrix();
 
-    initDream();
-    animateDream();
-
     window.addEventListener("resize", () => {
         resizeSpace();
         resizeMatrix();
-        resizeDream();
     });
 
     setTimeout(() => document.getElementById("reveal").style.opacity = 1, 400);
     setInterval(cycleTeaser, 3800);
     gameLoop();
 
-    setTheme("space");
+    // Start with Space theme
+    document.getElementById("space").style.display = "block";
+    document.getElementById("matrix").style.display = "none";
 };
 </script>
 </body>
