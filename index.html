@@ -1,334 +1,552 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	<title>✳️💜🥷🏻Unprincipled Inc. Web3 OS🥷🏻💜✳️</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>✳️💜🥷🏻Unprincipled Inc. Web3 OS🥷🏻💜✳️</title>
 
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
 
-	<style>
-		@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Press+Start+2P&display=swap');
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Press+Start+2P&display=swap');
 
-		* { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-		body {
-			background: #000;
-			color: #fff;
-			font-family: 'Orbitron', sans-serif;
-			position: relative;
-			overflow-y: auto;
-			min-height: 100vh;
-		}
+        :root {
+            --text: #fff;
+            --accent1: #ff00ff;
+            --accent2: #00ffff;
+            --glow: #ff00ff;
+        }
 
-		canvas#space {
-			position: fixed;
-			top: 0; left: 0;
-			z-index: 1;
-			width: 100%; height: 100%;
-			pointer-events: none;
-		}
+        body {
+            background: #000;
+            color: var(--text);
+            font-family: 'Orbitron', sans-serif;
+            position: relative;
+            overflow-y: auto;
+            min-height: 100vh;
+        }
 
-		.content {
-			position: relative;
-			z-index: 2;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			text-align: center;
-			padding: 20px 15px 100px;
-			max-width: 100%;
-			margin: 0 auto;
-			gap: 1.2rem;
-			min-height: 100vh;
-		}
+        /* THEME OVERRIDES */
+        body[data-theme="matrix"] {
+            --text: #00ff41;
+            --accent1: #00ff41;
+            --accent2: #00aa00;
+            --glow: #00ff41;
+        }
 
-		.logo {
-			font-size: clamp(1.9rem, 6vw, 2.9rem);
-			font-weight: 900;
-			letter-spacing: 0.35em;
-			margin-top: 1rem;
-			background: linear-gradient(90deg, #fff, #aaa, #fff);
-			-webkit-background-clip: text;
-			-webkit-text-fill-color: transparent;
-			text-shadow: 0 0 30px rgba(255,255,255,0.6);
-		}
+        body[data-theme="pink"] {
+            --text: #ffffff;
+            --accent1: #ff1493;
+            --accent2: #ff69b4;
+            --glow: #ff69b4;
+        }
 
-		.reveal {
-			font-size: clamp(2.3rem, 7.5vw, 3.6rem);
-			font-weight: 900;
-			letter-spacing: 0.12em;
-			color: #fff;
-			text-shadow: 0 0 40px #fff, 0 0 80px #ff00ff;
-			opacity: 0;
-			animation: pulse 4s infinite alternate;
-			margin-bottom: 0.5rem;
-		}
+        /* CANVASES - all themes share the same base */
+        #space, #matrix, #hearts {
+            position: fixed;
+            top: 0; left: 0;
+            z-index: 1;
+            width: 100%; height: 100%;
+            pointer-events: none;
+        }
 
-		.teaser {
-			font-family: 'Press Start 2P', cursive;
-			font-size: clamp(1rem, 3.5vw, 1.25rem);
-			min-height: 68px;
-			background: linear-gradient(90deg, #ff00ff, #00ffff, #ffff00, #ff00ff);
-			-webkit-background-clip: text;
-			-webkit-text-fill-color: transparent;
-			background-size: 300% 300%;
-			animation: rainbow 6s linear infinite;
-			text-shadow: 0 0 20px rgba(255,255,255,0.5);
-		}
+        #matrix, #hearts {
+            display: none;
+        }
 
-		.blurred-art {
-			width: min(320px, 88vw);
-			height: min(320px, 88vw);
-			background: #111;
-			border: 3px solid #fff;
-			box-shadow: 0 0 60px rgba(255,255,255,0.4), inset 0 0 60px rgba(255,255,255,0.1);
-			margin: 0.8rem 0;
-			border-radius: 6px;
-		}
+        .content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 20px 15px 100px;
+            max-width: 100%;
+            margin: 0 auto;
+            gap: 1.2rem;
+            min-height: 100vh;
+        }
 
-		.trampoline-game {
-			width: 100%;
-			max-width: 420px;
-			margin: 10px auto;
-			padding: 16px;
-			border: 2px solid rgba(255,255,255,0.2);
-			background: rgba(0,0,0,0.5);
-			backdrop-filter: blur(12px);
-			border-radius: 12px;
-		}
+        .logo {
+            font-size: clamp(1.9rem, 6vw, 2.9rem);
+            font-weight: 900;
+            letter-spacing: 0.35em;
+            margin-top: 1rem;
+            background: linear-gradient(90deg, var(--text), #aaa, var(--text));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(255,255,255,0.6);
+        }
 
-		.game-header {
-			font-family: 'Press Start 2P', cursive;
-			font-size: clamp(0.8rem, 2.6vw, 0.9rem);
-			margin-bottom: 12px;
-			color: #00ffff;
-		}
+        .reveal {
+            font-size: clamp(2.3rem, 7.5vw, 3.6rem);
+            font-weight: 900;
+            letter-spacing: 0.12em;
+            color: var(--text);
+            text-shadow: 0 0 40px var(--text), 0 0 80px var(--glow);
+            opacity: 0;
+            animation: pulse 4s infinite alternate;
+            margin-bottom: 0.5rem;
+        }
 
-		#trampolineGame {
-			display: block;
-			width: 100% !important;
-			height: auto !important;
-			max-width: 420px;
-			margin: 0 auto;
-			background: radial-gradient(circle, rgba(30,30,50,0.9), rgba(0,0,0,0.95));
-			border-radius: 10px;
-			border: 1px solid rgba(255,255,255,0.2);
-			cursor: pointer;
-		}
+        .teaser {
+            font-family: 'Press Start 2P', cursive;
+            font-size: clamp(1rem, 3.5vw, 1.25rem);
+            min-height: 68px;
+            background: linear-gradient(90deg, #ff00ff, #00ffff, #ffff00, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 300% 300%;
+            animation: rainbow 6s linear infinite;
+            text-shadow: 0 0 20px rgba(255,255,255,0.5);
+        }
 
-		.game-stats {
-			display: flex;
-			justify-content: space-between;
-			margin-top: 10px;
-			font-size: clamp(0.78rem, 2.3vw, 0.82rem);
-		}
+        .blurred-art {
+            width: min(320px, 88vw);
+            height: min(320px, 88vw);
+            background: #111;
+            border: 3px solid var(--text);
+            box-shadow: 0 0 60px rgba(255,255,255,0.4), inset 0 0 60px rgba(255,255,255,0.1);
+            margin: 0.8rem 0;
+            border-radius: 6px;
+        }
 
-		.game-tip {
-			margin-top: 10px;
-			font-size: clamp(0.68rem, 2.1vw, 0.72rem);
-			opacity: 0.75;
-		}
+        .trampoline-game {
+            width: 100%;
+            max-width: 420px;
+            margin: 10px auto;
+            padding: 16px;
+            border: 2px solid rgba(255,255,255,0.2);
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(12px);
+            border-radius: 12px;
+        }
 
-		.signal-button {
-			margin-top: 1.2rem;
-			padding: clamp(15px, 4.5vw, 19px) clamp(40px, 10vw, 52px);
-			font-family: 'Press Start 2P', cursive;
-			font-size: clamp(1rem, 3.4vw, 1.12rem);
-			background: transparent;
-			color: #fff;
-			border: 3px solid #fff;
-			cursor: pointer;
-			transition: all 0.3s;
-			white-space: nowrap;
-		}
+        .game-header {
+            font-family: 'Press Start 2P', cursive;
+            font-size: clamp(0.8rem, 2.6vw, 0.9rem);
+            margin-bottom: 12px;
+            color: var(--accent2);
+        }
 
-		.signal-button:hover {
-			background: #fff;
-			color: #000;
-			transform: scale(1.03);
-		}
+        #trampolineGame {
+            display: block;
+            width: 100% !important;
+            height: auto !important;
+            max-width: 420px;
+            margin: 0 auto;
+            background: radial-gradient(circle, rgba(30,30,50,0.9), rgba(0,0,0,0.95));
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.2);
+            cursor: pointer;
+        }
 
-		.footer {
-			margin-top: 2rem;
-			font-size: clamp(0.68rem, 2vw, 0.76rem);
-			opacity: 0.55;
-			text-align: center;
-		}
+        .game-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: clamp(0.78rem, 2.3vw, 0.82rem);
+        }
 
-		@keyframes rainbow {
-			0% { background-position: 0% 50%; }
-			100% { background-position: 300% 50%; }
-		}
+        .game-tip {
+            margin-top: 10px;
+            font-size: clamp(0.68rem, 2.1vw, 0.72rem);
+            opacity: 0.75;
+        }
 
-		@keyframes pulse {
-			from { text-shadow: 0 0 30px #fff; }
-			to { text-shadow: 0 0 75px #ff00ff; }
-		}
-	</style>
+        .signal-button {
+            margin-top: 1.2rem;
+            padding: clamp(15px, 4.5vw, 19px) clamp(40px, 10vw, 52px);
+            font-family: 'Press Start 2P', cursive;
+            font-size: clamp(1rem, 3.4vw, 1.12rem);
+            background: transparent;
+            color: var(--text);
+            border: 3px solid var(--text);
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .signal-button:hover {
+            background: #fff;
+            color: #000;
+            transform: scale(1.03);
+        }
+
+        .footer {
+            margin-top: 2rem;
+            font-size: clamp(0.68rem, 2vw, 0.76rem);
+            opacity: 0.55;
+            text-align: center;
+        }
+
+        /* THEME SWITCHER */
+        #theme-switcher {
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            z-index: 100;
+            display: flex;
+            gap: 12px;
+            background: rgba(10,10,20,0.85);
+            padding: 8px 12px;
+            border-radius: 50px;
+            border: 2px solid rgba(255,255,255,0.3);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 20px rgba(255,255,255,0.2);
+        }
+
+        .theme-btn {
+            width: 44px;
+            height: 44px;
+            border: none;
+            background: transparent;
+            font-size: 1.65rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .theme-btn:hover {
+            transform: scale(1.15);
+            box-shadow: 0 0 25px var(--accent1);
+        }
+
+        .theme-btn.active {
+            background: rgba(255,255,255,0.15);
+            box-shadow: 0 0 30px var(--accent1);
+            transform: scale(1.1);
+        }
+
+        @keyframes rainbow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 300% 50%; }
+        }
+
+        @keyframes pulse {
+            from { text-shadow: 0 0 30px var(--text); }
+            to { text-shadow: 0 0 75px var(--glow); }
+        }
+    </style>
 </head>
-<body>
-	<canvas id="space"></canvas>
+<body data-theme="space">
 
-	<div class="content">
-		<div class="reveal" id="reveal">SOMETHING IS COMING…</div>
-		
-		<div class="blurred-art"></div>
-		
-		<div class="teaser" id="teaser">333 LORDS AND LADIES</div>
-		
+    <!-- THEME BACKGROUNDS -->
+    <canvas id="space"></canvas>
+    <canvas id="matrix"></canvas>
+    <canvas id="hearts"></canvas>
 
-		<div class="trampoline-game">
-			<div class="game-header">🏀 SKY BOUNCE 🏀</div>
-			<canvas id="trampolineGame" width="420" height="260"></canvas>
+    <!-- THEME SWITCHER -->
+    <div id="theme-switcher">
+        <button data-theme="space" class="theme-btn active" onclick="setTheme('space')" title="Space Theme">🌌</button>
+        <button data-theme="matrix" class="theme-btn" onclick="setTheme('matrix')" title="Matrix Theme">🟢</button>
+        <button data-theme="pink" class="theme-btn" onclick="setTheme('pink')" title="Pink Hearts Theme">💖</button>
+    </div>
 
-			<div class="game-stats">
-				<div>Height: <span id="heightScore">0</span></div>
-				<div>Best: <span id="bestScore">0</span></div>
-			</div>
+    <div class="content">
+        <div class="reveal" id="reveal">SOMETHING IS COMING…</div>
+        
+        <div class="blurred-art"></div>
+        
+        <div class="teaser" id="teaser">333 LORDS AND LADIES</div>
 
-			<div class="game-tip">TAP WHEN BALL HITS TRAMPOLINE</div>
-		</div>
+        <div class="trampoline-game">
+            <div class="game-header">🏀 SKY BOUNCE 🏀</div>
+            <canvas id="trampolineGame" width="420" height="260"></canvas>
 
-		<button class="signal-button" onclick="handleSignal()">
-			SUPPORT WEB3 NOW
-		</button>
+            <div class="game-stats">
+                <div>Height: <span id="heightScore">0</span></div>
+                <div>Best: <span id="bestScore">0</span></div>
+            </div>
 
-		<div class="footer">SOLANA • 2026 • TRANSMISSION INCOMING</div>
-	</div>
+            <div class="game-tip">TAP WHEN BALL HITS TRAMPOLINE</div>
+        </div>
+
+        <button class="signal-button" onclick="handleSignal()">
+            SUPPORT WEB3 NOW
+        </button>
+
+        <div class="footer">SOLANA • 2026 • TRANSMISSION INCOMING</div>
+    </div>
 
 <script>
-/* ================= THREE.JS SPACE ================= */
+/* ================= THREE.JS SPACE (original) ================= */
 let scene, camera, renderer, particles;
 
 function initSpace() {
-	scene = new THREE.Scene();
-	camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
-	renderer = new THREE.WebGLRenderer({ canvas: document.getElementById("space"), alpha: true });
-	renderer.setSize(window.innerWidth, window.innerHeight);
-	renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
+    renderer = new THREE.WebGLRenderer({ canvas: document.getElementById("space"), alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-	const geometry = new THREE.BufferGeometry();
-	const vertices = [];
-	const colors = [];
-	for (let i = 0; i < 9000; i++) {
-		vertices.push(Math.random()*2000-1000, Math.random()*2000-1000, Math.random()*1800-900);
-		let c = Math.random();
-		colors.push(c, c, c);
-	}
-	geometry.setAttribute("position", new THREE.Float32BufferAttribute(vertices, 3));
-	geometry.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
+    const geometry = new THREE.BufferGeometry();
+    const vertices = [];
+    const colors = [];
+    for (let i = 0; i < 9000; i++) {
+        vertices.push(Math.random()*2000-1000, Math.random()*2000-1000, Math.random()*1800-900);
+        let c = Math.random();
+        colors.push(c, c, c);
+    }
+    geometry.setAttribute("position", new THREE.Float32BufferAttribute(vertices, 3));
+    geometry.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
 
-	particles = new THREE.Points(geometry, new THREE.PointsMaterial({ size: 2, vertexColors: true, transparent: true }));
-	scene.add(particles);
-	camera.position.z = 5;
+    particles = new THREE.Points(geometry, new THREE.PointsMaterial({ size: 2, vertexColors: true, transparent: true }));
+    scene.add(particles);
+    camera.position.z = 5;
 }
 
 function resizeSpace() {
-	if (!camera || !renderer) return;
-	camera.aspect = window.innerWidth / window.innerHeight;
-	camera.updateProjectionMatrix();
-	renderer.setSize(window.innerWidth, window.innerHeight);
+    if (!camera || !renderer) return;
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
 function animateSpace() {
-	requestAnimationFrame(animateSpace);
-	particles.rotation.y += 0.00008;
-	const pos = particles.geometry.attributes.position.array;
-	for (let i = 2; i < pos.length; i += 3) {
-		pos[i] += 4.5;
-		if (pos[i] > 900) pos[i] = -900;
-	}
-	particles.geometry.attributes.position.needsUpdate = true;
-	renderer.render(scene, camera);
+    requestAnimationFrame(animateSpace);
+    if (particles) {
+        particles.rotation.y += 0.00008;
+        const pos = particles.geometry.attributes.position.array;
+        for (let i = 2; i < pos.length; i += 3) {
+            pos[i] += 4.5;
+            if (pos[i] > 900) pos[i] = -900;
+        }
+        particles.geometry.attributes.position.needsUpdate = true;
+        renderer.render(scene, camera);
+    }
 }
 
-/* Teaser */
+/* ================= MATRIX RAIN ================= */
+let matrixCanvas, matrixCtx, matrixFontSize = 16;
+let matrixColumns, matrixDrops = [];
+const matrixChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()_+-=[]{}|;:,.<>/?~アイウエオカキクケコ";
+
+function initMatrix() {
+    matrixCanvas = document.getElementById("matrix");
+    matrixCtx = matrixCanvas.getContext("2d");
+    resizeMatrix();
+}
+
+function resizeMatrix() {
+    if (!matrixCanvas) return;
+    matrixCanvas.width = window.innerWidth;
+    matrixCanvas.height = window.innerHeight;
+    matrixColumns = Math.floor(matrixCanvas.width / matrixFontSize);
+    matrixDrops = new Array(matrixColumns).fill(1);
+}
+
+function drawMatrix() {
+    matrixCtx.fillStyle = "rgba(0, 0, 0, 0.05)";
+    matrixCtx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
+    matrixCtx.fillStyle = "#00ff41";
+    matrixCtx.font = `${matrixFontSize}px monospace`;
+    for (let i = 0; i < matrixDrops.length; i++) {
+        const text = matrixChars[Math.floor(Math.random() * matrixChars.length)];
+        matrixCtx.fillText(text, i * matrixFontSize, matrixDrops[i] * matrixFontSize);
+        if (matrixDrops[i] * matrixFontSize > matrixCanvas.height && Math.random() > 0.975) {
+            matrixDrops[i] = 0;
+        }
+        matrixDrops[i]++;
+    }
+}
+
+function animateMatrix() {
+    if (document.body.dataset.theme === "matrix") drawMatrix();
+    requestAnimationFrame(animateMatrix);
+}
+
+/* ================= PINK HEARTS ================= */
+let heartsCanvas, heartsCtx;
+let heartParticles = [];
+
+class HeartParticle {
+    constructor() {
+        this.reset();
+    }
+    reset() {
+        this.x = Math.random() * window.innerWidth;
+        this.y = Math.random() * window.innerHeight * 1.2 - window.innerHeight * 0.3;
+        this.size = Math.random() * 24 + 14;
+        this.speedY = Math.random() * 1.4 + 0.7;
+        this.speedX = (Math.random() - 0.5) * 1.8;
+        this.wobble = Math.random() * Math.PI * 2;
+        this.wobbleSpeed = Math.random() * 0.09 + 0.04;
+        this.hue = 315 + Math.random() * 35;
+    }
+    update() {
+        this.y += this.speedY;
+        this.x += Math.sin(this.wobble) * 2.2 + this.speedX;
+        this.wobble += this.wobbleSpeed;
+        if (this.y > window.innerHeight + 80) this.reset();
+    }
+    draw() {
+        heartsCtx.save();
+        heartsCtx.globalAlpha = 0.65 + Math.sin(this.wobble * 1.8) * 0.35;
+        heartsCtx.font = `${this.size}px system-ui`;
+        heartsCtx.fillStyle = `hsl(${this.hue}, 100%, 78%)`;
+        heartsCtx.shadowColor = `hsl(${this.hue}, 100%, 92%)`;
+        heartsCtx.shadowBlur = 18;
+        heartsCtx.fillText("💖", this.x, this.y);
+        heartsCtx.restore();
+    }
+}
+
+function initHearts() {
+    heartsCanvas = document.getElementById("hearts");
+    heartsCtx = heartsCanvas.getContext("2d");
+    resizeHearts();
+    heartParticles = [];
+    for (let i = 0; i < 130; i++) {
+        heartParticles.push(new HeartParticle());
+    }
+}
+
+function resizeHearts() {
+    if (!heartsCanvas) return;
+    heartsCanvas.width = window.innerWidth;
+    heartsCanvas.height = window.innerHeight;
+}
+
+function drawHearts() {
+    heartsCtx.fillStyle = "rgba(255, 105, 180, 0.065)";
+    heartsCtx.fillRect(0, 0, heartsCanvas.width, heartsCanvas.height);
+    heartParticles.forEach(p => {
+        p.update();
+        p.draw();
+    });
+}
+
+function animateHearts() {
+    if (document.body.dataset.theme === "pink") drawHearts();
+    requestAnimationFrame(animateHearts);
+}
+
+/* ================= THEME SWITCHER ================= */
+let currentTheme = "space";
+
+function setTheme(theme) {
+    if (currentTheme === theme) return;
+    currentTheme = theme;
+
+    // Update body data attribute (drives all CSS variables)
+    document.body.dataset.theme = theme;
+
+    // Show/hide the correct canvas
+    document.getElementById("space").style.display = theme === "space" ? "block" : "none";
+    document.getElementById("matrix").style.display = theme === "matrix" ? "block" : "none";
+    document.getElementById("hearts").style.display = theme === "pink" ? "block" : "none";
+
+    // Highlight active button
+    document.querySelectorAll("#theme-switcher .theme-btn").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.theme === theme);
+    });
+}
+
+/* ================= TEASER & SIGNAL (original) ================= */
 const teasers = ["333 LORDS AND LADIES", "666 NOBLES", "999 PEASANTS"];
 let tIndex = 0;
 function cycleTeaser() {
-	tIndex = (tIndex + 1) % teasers.length;
-	document.getElementById("teaser").textContent = teasers[tIndex];
+    tIndex = (tIndex + 1) % teasers.length;
+    document.getElementById("teaser").textContent = teasers[tIndex];
 }
 
-/* Signal */
 function handleSignal() {
-	window.open("https://x.com/intent/tweet?text=" + encodeURIComponent("Joining Unprincipled Inc 🚀"), "_blank");
+    window.open("https://x.com/intent/tweet?text=" + encodeURIComponent("Joining Unprincipled Inc 🚀"), "_blank");
 }
 
-/* ================= TRAMPOLINE GAME ================= */
+/* ================= TRAMPOLINE GAME (original) ================= */
 const gameCanvas = document.getElementById("trampolineGame");
 const ctx = gameCanvas.getContext("2d");
 
 let y = 100, v = 0, g = 0.45, floor = 200;
 let score = 0, best = 0;
-let justBounced = false;   // ← New flag to detect natural landing
+let justBounced = false;
 
 function tap() {
-	const near = y > floor - 28 && y < floor + 12 && v > 0;
-	if (near) {
-		v = -13;
-		score += 10;
-		if (score > best) best = score;
-		justBounced = true;        // successful tap
-	} else {
-		v += 8;                    // stronger penalty on bad tap
-		score = 0;
-	}
+    const near = y > floor - 28 && y < floor + 12 && v > 0;
+    if (near) {
+        v = -13;
+        score += 10;
+        if (score > best) best = score;
+        justBounced = true;
+    } else {
+        v += 8;
+        score = 0;
+    }
 }
 
 gameCanvas.addEventListener("click", tap);
 gameCanvas.addEventListener("touchstart", e => { e.preventDefault(); tap(); });
 
 function gameLoop() {
-	ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+    ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
 
-	v += g;
-	y += v;
+    v += g;
+    y += v;
 
-	// Detect when ball lands
-	if (y >= floor) {
-		y = floor;
-		const oldV = v;
-		v *= -0.5;
+    if (y >= floor) {
+        y = floor;
+        const oldV = v;
+        v *= -0.5;
+        if (!justBounced && oldV > 0) score = 0;
+        justBounced = false;
+    }
 
-		// If it landed without a successful tap this cycle → reset
-		if (!justBounced && oldV > 0) {
-			score = 0;
-		}
-		justBounced = false;
-	}
+    // trampoline
+    ctx.strokeStyle = "#00ffff"; 
+    ctx.lineWidth = 4;
+    ctx.beginPath(); 
+    ctx.moveTo(120, floor); 
+    ctx.lineTo(300, floor); 
+    ctx.stroke();
 
-	// Draw trampoline
-	ctx.strokeStyle = "#00ffff"; 
-	ctx.lineWidth = 4;
-	ctx.beginPath(); 
-	ctx.moveTo(120, floor); 
-	ctx.lineTo(300, floor); 
-	ctx.stroke();
+    // ball
+    ctx.fillStyle = "#fff";
+    ctx.beginPath(); 
+    ctx.arc(210, y, 10, 0, Math.PI * 2); 
+    ctx.fill();
 
-	// Draw ball
-	ctx.fillStyle = "#fff";
-	ctx.beginPath(); 
-	ctx.arc(210, y, 10, 0, Math.PI * 2); 
-	ctx.fill();
+    document.getElementById("heightScore").innerText = score;
+    document.getElementById("bestScore").innerText = best;
 
-	// Update UI
-	document.getElementById("heightScore").innerText = score;
-	document.getElementById("bestScore").innerText = best;
-
-	requestAnimationFrame(gameLoop);
+    requestAnimationFrame(gameLoop);
 }
 
-/* INIT */
+/* INIT EVERYTHING */
 window.onload = () => {
-	initSpace();
-	animateSpace();
-	window.addEventListener("resize", resizeSpace);
+    // Space (original)
+    initSpace();
+    animateSpace();
 
-	setTimeout(() => document.getElementById("reveal").style.opacity = 1, 400);
-	setInterval(cycleTeaser, 3800);
-	gameLoop();
+    // Matrix
+    initMatrix();
+    animateMatrix();
+
+    // Hearts
+    initHearts();
+    animateHearts();
+
+    // Resize handler for all canvases
+    window.addEventListener("resize", () => {
+        resizeSpace();
+        resizeMatrix();
+        resizeHearts();
+    });
+
+    // Original animations
+    setTimeout(() => document.getElementById("reveal").style.opacity = 1, 400);
+    setInterval(cycleTeaser, 3800);
+    gameLoop();
+
+    // Make sure default theme is active (just in case)
+    setTheme("space");
 };
 </script>
 </body>
