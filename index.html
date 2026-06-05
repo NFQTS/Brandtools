@@ -36,15 +36,15 @@
             --glow: #00ff41;
         }
 
-        body[data-theme="pink"] {
-            --text: #ffffff;
-            --accent1: #ff1493;
-            --accent2: #ff69b4;
-            --glow: #ff69b4;
+        body[data-theme="dream"] {
+            --text: #ffe4f0;
+            --accent1: #ff69b4;
+            --accent2: #c026d3;
+            --glow: #ff1493;
         }
 
-        /* CANVASES - all themes share the same base */
-        #space, #matrix, #hearts {
+        /* CANVASES */
+        #space, #matrix, #dream {
             position: fixed;
             top: 0; left: 0;
             z-index: 1;
@@ -52,7 +52,7 @@
             pointer-events: none;
         }
 
-        #matrix, #hearts {
+        #matrix, #dream {
             display: none;
         }
 
@@ -75,7 +75,7 @@
             font-weight: 900;
             letter-spacing: 0.35em;
             margin-top: 1rem;
-            background: linear-gradient(90deg, var(--text), #aaa, var(--text));
+            background: linear-gradient(90deg, var(--text), #ddd, var(--text));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-shadow: 0 0 30px rgba(255,255,255,0.6);
@@ -144,18 +144,7 @@
             cursor: pointer;
         }
 
-        .game-stats {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 10px;
-            font-size: clamp(0.78rem, 2.3vw, 0.82rem);
-        }
-
-        .game-tip {
-            margin-top: 10px;
-            font-size: clamp(0.68rem, 2.1vw, 0.72rem);
-            opacity: 0.75;
-        }
+        .game-stats, .game-tip { color: var(--text); }
 
         .signal-button {
             margin-top: 1.2rem;
@@ -215,7 +204,6 @@
 
         .theme-btn:hover {
             transform: scale(1.15);
-            box-shadow: 0 0 25px var(--accent1);
         }
 
         .theme-btn.active {
@@ -240,13 +228,13 @@
     <!-- THEME BACKGROUNDS -->
     <canvas id="space"></canvas>
     <canvas id="matrix"></canvas>
-    <canvas id="hearts"></canvas>
+    <canvas id="dream"></canvas>
 
     <!-- THEME SWITCHER -->
     <div id="theme-switcher">
         <button data-theme="space" class="theme-btn active" onclick="setTheme('space')" title="Space Theme">🌌</button>
         <button data-theme="matrix" class="theme-btn" onclick="setTheme('matrix')" title="Matrix Theme">🟢</button>
-        <button data-theme="pink" class="theme-btn" onclick="setTheme('pink')" title="Pink Hearts Theme">💖</button>
+        <button data-theme="dream" class="theme-btn" onclick="setTheme('dream')" title="Dreamy Luxe Theme">✨</button>
     </div>
 
     <div class="content">
@@ -276,7 +264,7 @@
     </div>
 
 <script>
-/* ================= THREE.JS SPACE (original) ================= */
+/* ================= THREE.JS SPACE ================= */
 let scene, camera, renderer, particles;
 
 function initSpace() {
@@ -362,70 +350,79 @@ function animateMatrix() {
     requestAnimationFrame(animateMatrix);
 }
 
-/* ================= PINK HEARTS ================= */
-let heartsCanvas, heartsCtx;
-let heartParticles = [];
+/* ================= DREAMY LUXE SPARKLE (new feminine theme) ================= */
+let dreamCanvas, dreamCtx;
+let dreamParticles = [];
 
-class HeartParticle {
+class DreamParticle {
     constructor() {
         this.reset();
     }
     reset() {
         this.x = Math.random() * window.innerWidth;
-        this.y = Math.random() * window.innerHeight * 1.2 - window.innerHeight * 0.3;
-        this.size = Math.random() * 24 + 14;
-        this.speedY = Math.random() * 1.4 + 0.7;
-        this.speedX = (Math.random() - 0.5) * 1.8;
-        this.wobble = Math.random() * Math.PI * 2;
-        this.wobbleSpeed = Math.random() * 0.09 + 0.04;
-        this.hue = 315 + Math.random() * 35;
+        this.y = Math.random() * window.innerHeight * 1.4 - window.innerHeight * 0.4;
+        this.size = Math.random() * 6 + 2.5;
+        this.speedY = Math.random() * 0.8 + 0.4;
+        this.speedX = (Math.random() - 0.5) * 1.2;
+        this.opacity = Math.random() * 0.8 + 0.4;
+        this.twinkleSpeed = Math.random() * 0.08 + 0.03;
+        this.hue = 280 + Math.random() * 70; // soft pinks, purples, rose gold
+        this.type = Math.random() < 0.75 ? "sparkle" : "petal";
     }
     update() {
         this.y += this.speedY;
-        this.x += Math.sin(this.wobble) * 2.2 + this.speedX;
-        this.wobble += this.wobbleSpeed;
-        if (this.y > window.innerHeight + 80) this.reset();
+        this.x += Math.sin(this.y * 0.008) * 1.1 + this.speedX;
+        this.opacity = 0.5 + Math.sin(Date.now() * this.twinkleSpeed) * 0.5;
+        if (this.y > window.innerHeight + 50) this.reset();
     }
     draw() {
-        heartsCtx.save();
-        heartsCtx.globalAlpha = 0.65 + Math.sin(this.wobble * 1.8) * 0.35;
-        heartsCtx.font = `${this.size}px system-ui`;
-        heartsCtx.fillStyle = `hsl(${this.hue}, 100%, 78%)`;
-        heartsCtx.shadowColor = `hsl(${this.hue}, 100%, 92%)`;
-        heartsCtx.shadowBlur = 18;
-        heartsCtx.fillText("💖", this.x, this.y);
-        heartsCtx.restore();
+        dreamCtx.save();
+        dreamCtx.globalAlpha = this.opacity;
+        if (this.type === "sparkle") {
+            dreamCtx.fillStyle = `hsl(${this.hue}, 100%, 88%)`;
+            dreamCtx.shadowBlur = 12;
+            dreamCtx.shadowColor = `hsl(${this.hue}, 100%, 95%)`;
+            dreamCtx.fillRect(this.x, this.y, this.size, this.size);
+        } else {
+            dreamCtx.font = `${this.size * 4.5}px system-ui`;
+            dreamCtx.fillStyle = `hsl(${this.hue}, 90%, 85%)`;
+            dreamCtx.shadowBlur = 20;
+            dreamCtx.shadowColor = `hsl(${this.hue}, 100%, 92%)`;
+            dreamCtx.fillText("🌸", this.x - this.size*2, this.y);
+        }
+        dreamCtx.restore();
     }
 }
 
-function initHearts() {
-    heartsCanvas = document.getElementById("hearts");
-    heartsCtx = heartsCanvas.getContext("2d");
-    resizeHearts();
-    heartParticles = [];
-    for (let i = 0; i < 130; i++) {
-        heartParticles.push(new HeartParticle());
+function initDream() {
+    dreamCanvas = document.getElementById("dream");
+    dreamCtx = dreamCanvas.getContext("2d");
+    resizeDream();
+    dreamParticles = [];
+    for (let i = 0; i < 180; i++) {   // optimized count
+        dreamParticles.push(new DreamParticle());
     }
 }
 
-function resizeHearts() {
-    if (!heartsCanvas) return;
-    heartsCanvas.width = window.innerWidth;
-    heartsCanvas.height = window.innerHeight;
+function resizeDream() {
+    if (!dreamCanvas) return;
+    dreamCanvas.width = window.innerWidth;
+    dreamCanvas.height = window.innerHeight;
 }
 
-function drawHearts() {
-    heartsCtx.fillStyle = "rgba(255, 105, 180, 0.065)";
-    heartsCtx.fillRect(0, 0, heartsCanvas.width, heartsCanvas.height);
-    heartParticles.forEach(p => {
+function drawDream() {
+    dreamCtx.fillStyle = "rgba(20, 5, 25, 0.12)";   // soft dark purple fade
+    dreamCtx.fillRect(0, 0, dreamCanvas.width, dreamCanvas.height);
+
+    dreamParticles.forEach(p => {
         p.update();
         p.draw();
     });
 }
 
-function animateHearts() {
-    if (document.body.dataset.theme === "pink") drawHearts();
-    requestAnimationFrame(animateHearts);
+function animateDream() {
+    if (document.body.dataset.theme === "dream") drawDream();
+    requestAnimationFrame(animateDream);
 }
 
 /* ================= THEME SWITCHER ================= */
@@ -435,21 +432,18 @@ function setTheme(theme) {
     if (currentTheme === theme) return;
     currentTheme = theme;
 
-    // Update body data attribute (drives all CSS variables)
     document.body.dataset.theme = theme;
 
-    // Show/hide the correct canvas
     document.getElementById("space").style.display = theme === "space" ? "block" : "none";
     document.getElementById("matrix").style.display = theme === "matrix" ? "block" : "none";
-    document.getElementById("hearts").style.display = theme === "pink" ? "block" : "none";
+    document.getElementById("dream").style.display = theme === "dream" ? "block" : "none";
 
-    // Highlight active button
     document.querySelectorAll("#theme-switcher .theme-btn").forEach(btn => {
         btn.classList.toggle("active", btn.dataset.theme === theme);
     });
 }
 
-/* ================= TEASER & SIGNAL (original) ================= */
+/* ================= TEASER & SIGNAL ================= */
 const teasers = ["333 LORDS AND LADIES", "666 NOBLES", "999 PEASANTS"];
 let tIndex = 0;
 function cycleTeaser() {
@@ -461,7 +455,7 @@ function handleSignal() {
     window.open("https://x.com/intent/tweet?text=" + encodeURIComponent("Joining Unprincipled Inc 🚀"), "_blank");
 }
 
-/* ================= TRAMPOLINE GAME (original) ================= */
+/* ================= TRAMPOLINE GAME ================= */
 const gameCanvas = document.getElementById("trampolineGame");
 const ctx = gameCanvas.getContext("2d");
 
@@ -499,7 +493,6 @@ function gameLoop() {
         justBounced = false;
     }
 
-    // trampoline
     ctx.strokeStyle = "#00ffff"; 
     ctx.lineWidth = 4;
     ctx.beginPath(); 
@@ -507,7 +500,6 @@ function gameLoop() {
     ctx.lineTo(300, floor); 
     ctx.stroke();
 
-    // ball
     ctx.fillStyle = "#fff";
     ctx.beginPath(); 
     ctx.arc(210, y, 10, 0, Math.PI * 2); 
@@ -519,33 +511,27 @@ function gameLoop() {
     requestAnimationFrame(gameLoop);
 }
 
-/* INIT EVERYTHING */
+/* INIT */
 window.onload = () => {
-    // Space (original)
     initSpace();
     animateSpace();
 
-    // Matrix
     initMatrix();
     animateMatrix();
 
-    // Hearts
-    initHearts();
-    animateHearts();
+    initDream();
+    animateDream();
 
-    // Resize handler for all canvases
     window.addEventListener("resize", () => {
         resizeSpace();
         resizeMatrix();
-        resizeHearts();
+        resizeDream();
     });
 
-    // Original animations
     setTimeout(() => document.getElementById("reveal").style.opacity = 1, 400);
     setInterval(cycleTeaser, 3800);
     gameLoop();
 
-    // Make sure default theme is active (just in case)
     setTheme("space");
 };
 </script>
