@@ -3,6 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 	<title>AI Research Pulse</title>
 
 	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -10,72 +11,79 @@
 	<style>
 		* {
 			box-sizing: border-box;
-			font-family: Inter, Arial, sans-serif;
 		}
 
 		body {
 			margin: 0;
-			background: #05070d;
+			background:
+				radial-gradient(circle at top, #16213e, #05070d 45%);
 			color: white;
-			min-height: 100vh;
+			font-family: Inter, Arial, sans-serif;
 		}
 
 		.container {
 			max-width: 1200px;
 			margin: auto;
-			padding: 40px 20px;
+			padding: 50px 24px;
 		}
 
 		h1 {
-			font-size: 48px;
-			margin-bottom: 10px;
-			background: linear-gradient(90deg, #ffffff, #8ab4ff);
-			-webkit-background-clip: text;
-			color: transparent;
+			font-size: 52px;
+			margin: 0;
+			letter-spacing: -2px;
 		}
 
 		.subtitle {
 			color: #9ca3af;
 			font-size: 18px;
+			margin-top: 12px;
 			margin-bottom: 40px;
 		}
 
 		.grid {
 			display: grid;
-			grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-			gap: 20px;
+			grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+			gap: 18px;
 		}
 
 		.card {
-			background: rgba(255,255,255,0.05);
-			border: 1px solid rgba(255,255,255,0.08);
-			border-radius: 20px;
+			background: rgba(255,255,255,0.06);
+			border: 1px solid rgba(255,255,255,0.1);
+			border-radius: 22px;
 			padding: 24px;
-			backdrop-filter: blur(10px);
-		}
-
-		.metric {
-			font-size: 36px;
-			font-weight: 700;
+			backdrop-filter: blur(15px);
 		}
 
 		.label {
-			color: #9ca3af;
-			margin-bottom: 10px;
+			color: #94a3b8;
+			font-size: 14px;
+			text-transform: uppercase;
+			letter-spacing: 1px;
 		}
 
-		.up {
+		.value {
+			font-size: 38px;
+			font-weight: 700;
+			margin-top: 10px;
+		}
+
+		.green {
 			color: #4ade80;
 		}
 
-		.chart-container {
-			height: 350px;
+		.chart-card {
+			margin-top: 24px;
+			height: 430px;
+		}
+
+		canvas {
+			max-height: 340px;
 		}
 
 		.topic {
 			display: flex;
 			justify-content: space-between;
-			padding: 14px 0;
+			padding: 15px 0;
 			border-bottom: 1px solid rgba(255,255,255,0.08);
 		}
 
@@ -83,13 +91,24 @@
 			border-bottom: none;
 		}
 
-		.badge {
-			background: rgba(74,222,128,0.15);
-			color: #4ade80;
-			padding: 5px 10px;
-			border-radius: 20px;
+		.topic-name {
+			font-weight: 600;
+		}
+
+		.topic-value {
+			color: #93c5fd;
+		}
+
+		.loading {
+			color: #94a3b8;
+		}
+
+		.footer {
+			color: #64748b;
+			margin-top: 40px;
 			font-size: 13px;
 		}
+
 	</style>
 </head>
 
@@ -100,93 +119,74 @@
 	<h1>AI Research Pulse</h1>
 
 	<div class="subtitle">
-		Measuring where artificial intelligence research is accelerating.
-		No predictions. Just signals.
+		A live view of where AI research activity is concentrating.
+		Powered by arXiv categories.
 	</div>
 
 
 	<div class="grid">
 
 		<div class="card">
-			<div class="label">Total AI Papers Tracked</div>
-			<div class="metric">482,391</div>
+			<div class="label">
+				Papers sampled
+			</div>
+
+			<div class="value" id="total">
+				...
+			</div>
 		</div>
 
-		<div class="card">
-			<div class="label">Fastest Growing Field</div>
-			<div class="metric up">Robotics +46%</div>
-		</div>
 
 		<div class="card">
-			<div class="label">Research Community</div>
-			<div class="metric">1.8M Authors</div>
+			<div class="label">
+				Most active area
+			</div>
+
+			<div class="value green" id="leader">
+				...
+			</div>
+		</div>
+
+
+		<div class="card">
+			<div class="label">
+				Researchers sampled
+			</div>
+
+			<div class="value" id="authors">
+				...
+			</div>
 		</div>
 
 	</div>
 
 
-	<br>
+	<div class="card chart-card">
+
+		<h2>
+			Current Research Velocity
+		</h2>
+
+		<canvas id="chart"></canvas>
+
+	</div>
 
 
 	<div class="card">
-		<h2>Research Velocity</h2>
-		<div class="chart-container">
-			<canvas id="velocityChart"></canvas>
+
+		<h2>
+			AI Research Landscape
+		</h2>
+
+		<div id="topics" class="loading">
+			Loading...
 		</div>
+
 	</div>
 
 
-	<br>
-
-
-	<div class="grid">
-
-		<div class="card">
-			<h2>AI Research Areas</h2>
-
-			<div class="topic">
-				<span>Large Language Models</span>
-				<span class="badge">+82%</span>
-			</div>
-
-			<div class="topic">
-				<span>Robotics</span>
-				<span class="badge">+46%</span>
-			</div>
-
-			<div class="topic">
-				<span>Computer Vision</span>
-				<span class="badge">+31%</span>
-			</div>
-
-			<div class="topic">
-				<span>Reinforcement Learning</span>
-				<span class="badge">+12%</span>
-			</div>
-
-		</div>
-
-
-		<div class="card">
-			<h2>Community Growth</h2>
-
-			<div class="topic">
-				<span>LLM Researchers</span>
-				<span>240k</span>
-			</div>
-
-			<div class="topic">
-				<span>Robotics Researchers</span>
-				<span>95k</span>
-			</div>
-
-			<div class="topic">
-				<span>Vision Researchers</span>
-				<span>180k</span>
-			</div>
-
-		</div>
-
+	<div class="footer">
+		This dashboard measures research activity, not investment advice.
 	</div>
 
 
@@ -195,55 +195,212 @@
 
 <script>
 
-const ctx = document.getElementById("velocityChart");
+const categories = {
+	"Artificial Intelligence": "cs.AI",
+	"Machine Learning": "cs.LG",
+	"Computer Vision": "cs.CV",
+	"Robotics": "cs.RO",
+	"Natural Language": "cs.CL"
+};
 
-new Chart(ctx, {
-	type: "line",
-	data: {
-		labels: [
-			"2018",
-			"2019",
-			"2020",
-			"2021",
-			"2022",
-			"2023",
-			"2024",
-			"2025"
-		],
-		datasets: [
-			{
-				label: "Language Models",
-				data: [20, 35, 80, 140, 300, 700, 1200, 1700]
-			},
-			{
-				label: "Robotics",
-				data: [100, 130, 170, 220, 310, 450, 650, 900]
-			},
-			{
-				label: "Computer Vision",
-				data: [200, 260, 330, 410, 520, 650, 780, 900]
-			}
-		]
-	},
-	options: {
-		responsive: true,
-		maintainAspectRatio: false,
-		scales: {
-			x: {
-				grid: {
-					display: false
-				}
-			},
-			y: {
-				grid: {
-					color: "rgba(255,255,255,0.05)"
-				}
-			}
-		}
+
+async function getArxiv(category) {
+
+	const url =
+		"https://export.arxiv.org/api/query?" +
+		"search_query=cat:" + category +
+		"&start=0" +
+		"&max_results=100";
+
+
+	const response = await fetch(url);
+
+	const xml = await response.text();
+
+
+	const parser = new DOMParser();
+
+	const doc = parser.parseFromString(
+		xml,
+		"text/xml"
+	);
+
+
+	const entries =
+		[...doc.querySelectorAll("entry")];
+
+
+	let authors = new Set();
+
+
+	entries.forEach(entry => {
+
+		entry
+			.querySelectorAll("author name")
+			.forEach(a => {
+				authors.add(a.textContent);
+			});
+
+	});
+
+
+	return {
+		papers: entries.length,
+		authors: authors.size
+	};
+
+}
+
+
+
+async function loadDashboard() {
+
+	const results = [];
+
+
+	for (const [name, category] of Object.entries(categories)) {
+
+		const data =
+			await getArxiv(category);
+
+
+		results.push({
+			name,
+			...data
+		});
 	}
-});
+
+
+	const total =
+		results.reduce(
+			(a,b)=>a+b.papers,
+			0
+		);
+
+
+	const authors =
+		results.reduce(
+			(a,b)=>a+b.authors,
+			0
+		);
+
+
+	const leader =
+		results.sort(
+			(a,b)=>b.papers-a.papers
+		)[0];
+
+
+	document
+		.getElementById("total")
+		.innerText =
+		total.toLocaleString();
+
+
+	document
+		.getElementById("authors")
+		.innerText =
+		authors.toLocaleString();
+
+
+	document
+		.getElementById("leader")
+		.innerText =
+		leader.name;
+
+
+
+	document
+		.getElementById("topics")
+		.innerHTML =
+
+		results.map(item =>
+
+			`
+			<div class="topic">
+
+				<div class="topic-name">
+					${item.name}
+				</div>
+
+				<div class="topic-value">
+					${item.papers} papers
+					/
+					${item.authors} authors
+				</div>
+
+			</div>
+			`
+
+		).join("");
+
+
+
+	new Chart(
+		document.getElementById("chart"),
+		{
+
+			type: "bar",
+
+			data: {
+
+				labels:
+					results.map(x=>x.name),
+
+				datasets: [
+
+					{
+						data:
+							results.map(x=>x.papers),
+
+						borderRadius: 12
+					}
+
+				]
+
+			},
+
+			options: {
+
+				responsive:true,
+
+				plugins:{
+
+					legend:{
+						display:false
+					}
+
+				},
+
+				scales:{
+
+					x:{
+						grid:{
+							display:false
+						}
+					},
+
+					y:{
+						grid:{
+							color:
+							"rgba(255,255,255,0.08)"
+						}
+					}
+
+				}
+
+			}
+
+		}
+	);
+
+}
+
+
+loadDashboard();
 
 </script>
+
 
 </body>
 </html>
